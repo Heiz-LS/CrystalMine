@@ -92,6 +92,81 @@ button{font:inherit;color:inherit;border:0;cursor:pointer;touch-action:manipulat
 .level-section-title{margin:16px 0 8px;color:#8fe1ff;font-size:11px;letter-spacing:.16em}
 @media(max-width:760px){.level-grid{grid-template-columns:repeat(8,minmax(0,1fr));gap:5px}.level-card{min-height:62px}.level-card .n{font-size:16px}.level-card .name{font-size:7px}.level-card .best{font-size:7px}}
 
+
+/* Crystal Mine 0.4.1 — mobile landscape controls and browser-viewport fit */
+html,body{height:100vh;height:var(--viewport-height,100dvh);min-height:0}
+#app{top:var(--viewport-top,0px);left:0;right:0;bottom:auto;height:var(--viewport-height,100dvh);width:100%;}
+.screen{height:100%;min-height:0}
+.hud{top:calc(env(safe-area-inset-top,0px) + 7px);left:calc(env(safe-area-inset-left,0px) + clamp(8px,1.5vw,20px));right:calc(env(safe-area-inset-right,0px) + clamp(8px,1.5vw,20px));}
+.game-bottom{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:end;gap:10px;left:calc(env(safe-area-inset-left,0px) + 10px);right:calc(env(safe-area-inset-right,0px) + 10px);bottom:calc(env(safe-area-inset-bottom,0px) + 9px);}
+.lane-controls{grid-column:1;justify-self:start;align-self:end;}
+.unload-btn{grid-column:2;justify-self:center;align-self:end;min-width:150px;min-height:54px;padding:7px 12px;}
+.move-controls{grid-column:3;justify-self:end;align-self:end;}
+@media (max-width:900px) and (orientation:landscape){
+ .hud{gap:5px;top:calc(env(safe-area-inset-top,0px) + 5px)}
+ .hud-group{gap:4px}
+ .hud-chip{min-width:55px;padding:5px 6px;border-radius:10px}
+ .hud-level{min-width:94px;max-width:112px}
+ .hud-chip .cap{font-size:7px;letter-spacing:.1em}
+ .hud-chip .num{font-size:14px;line-height:1.15}
+ .hud-chip .sub{font-size:8px}
+ .hud-lives{min-width:48px}
+ .hud-lives .num{font-size:11px;letter-spacing:0}
+ .hud-actions{gap:4px}
+ .icon-btn{width:32px;height:34px;border-radius:10px;font-size:15px}
+ .game-bottom{grid-template-columns:minmax(76px,1fr) minmax(116px,auto) minmax(120px,1fr);gap:5px;bottom:calc(env(safe-area-inset-bottom,0px) + 7px);left:calc(env(safe-area-inset-left,0px) + 7px);right:calc(env(safe-area-inset-right,0px) + 7px)}
+ .lane-controls{flex-direction:column;gap:5px;align-items:stretch;width:82px}
+ .lane-btn{width:82px;min-width:82px;min-height:43px;padding:4px 5px;border-radius:11px;gap:5px;font-size:8px;letter-spacing:.025em}
+ .lane-btn b{width:23px;height:23px;flex:none;font-size:14px}
+ .lane-btn span{line-height:1.1;text-align:left}
+ .unload-btn{min-width:116px;width:min(26vw,142px);min-height:54px;padding:6px 7px;border-radius:13px;font-size:9px;letter-spacing:.025em;line-height:1.15}
+ .unload-btn small{font-size:7px;line-height:1.2}
+ .move-controls{gap:5px}
+ .move-btn{width:clamp(58px,8vw,72px);min-width:58px;min-height:58px;padding:5px 4px;border-radius:13px}
+ .move-btn b{font-size:21px;line-height:1}
+ .move-btn span{font-size:8px;letter-spacing:.08em}
+ .tutorial{top:54px;width:min(460px,68vw);padding:7px 10px}
+ .tutorial strong{font-size:8px;margin-bottom:3px}
+ .tutorial span{font-size:10px}
+ .modal-layer{padding:8px}
+ .modal{max-height:calc(var(--viewport-height,100dvh) - 16px);padding:15px;border-radius:18px}
+ .level-card{min-height:55px}
+ .menu-wrap{height:calc(var(--viewport-height,100dvh) - 12px);max-height:680px;padding:10px 18px;gap:18px}
+ .brand h1{font-size:clamp(30px,5.5vw,52px)}
+ .brand p{font-size:11px;line-height:1.4;margin-top:10px}
+ .menu-card{padding:13px;border-radius:18px}
+ .menu-card h2{font-size:11px;margin-bottom:9px}
+ .menu-buttons{gap:6px}
+ .menu-buttons .btn{min-height:36px;padding:6px 9px;font-size:10px}
+ .menu-foot{font-size:8px;margin-top:8px}
+}
+@media (max-width:560px) and (orientation:landscape){
+ .hud-group:first-child .hud-chip:nth-child(2){display:none}
+ .hud-group:nth-child(2) .hud-chip:nth-child(2) .sub{display:none}
+ .hud-group:nth-child(2) .hud-chip:nth-child(3) .sub{display:none}
+ .game-bottom{grid-template-columns:78px minmax(108px,1fr) 120px;gap:4px}
+ .lane-controls,.lane-btn{width:76px;min-width:76px}
+ .lane-btn{min-height:40px;font-size:7px}
+ .lane-btn b{width:20px;height:20px}
+ .unload-btn{width:108px;min-width:108px;min-height:50px;font-size:8px}
+ .move-btn{width:56px;min-width:56px;min-height:54px}
+ .move-controls{gap:4px}
+}
+@media (max-height:420px) and (orientation:landscape){
+ .hud-chip{padding:4px 5px}
+ .hud-chip .num{font-size:13px}
+ .game-bottom{bottom:calc(env(safe-area-inset-bottom,0px) + 5px)}
+ .lane-btn{min-height:38px}
+ .move-btn{min-height:50px}
+ .unload-btn{min-height:48px}
+ .intro-card{max-height:calc(var(--viewport-height,100dvh) - 16px);overflow:auto}
+}
+@media (hover:none) and (pointer:coarse){
+ button{ -webkit-touch-callout:none; }
+ .lane-btn,.move-btn,.unload-btn,.icon-btn{touch-action:manipulation}
+ .move-btn{touch-action:none}
+}
+
 </style>
 </head>
 <body>
@@ -145,14 +220,14 @@ button{font:inherit;color:inherit;border:0;cursor:pointer;touch-action:manipulat
     <div class="toast" id="toast"></div>
     <div class="game-bottom">
       <div class="lane-controls">
-        <button class="lane-btn" id="laneRear" data-action="lane-rear"><b>W</b><span>ДАЛЬНИЙ<br>РЕЛЬС</span></button>
-        <button class="lane-btn" id="laneFront" data-action="lane-front"><b>S</b><span>БЛИЖНИЙ<br>РЕЛЬС</span></button>
+        <button class="lane-btn" id="laneRear" data-action="lane-rear" aria-label="Перейти на дальний рельс"><b>↑</b><span>НАЗАД<br>ДАЛЬНИЙ</span></button>
+        <button class="lane-btn" id="laneFront" data-action="lane-front" aria-label="Перейти на ближний рельс"><b>↓</b><span>ВПЕРЁД<br>БЛИЖНИЙ</span></button>
       </div>
       <div class="move-controls" aria-label="Управление вагонеткой">
-        <button class="move-btn" data-move="-1" aria-label="Двигаться влево"><b>◀ A</b><span>ВЛЕВО</span></button>
-        <button class="move-btn" data-move="1" aria-label="Двигаться вправо"><b>D ▶</b><span>ВПРАВО</span></button>
+        <button class="move-btn" data-move="-1" aria-label="Двигаться влево"><b>◀</b><span>ВЛЕВО</span></button>
+        <button class="move-btn" data-move="1" aria-label="Двигаться вправо"><b>▶</b><span>ВПРАВО</span></button>
       </div>
-      <button class="unload-btn" id="unloadBtn" data-action="unload"><span id="unloadLabel">РАЗГРУЗИТЬ</span><small id="unloadTimer">ГОТОВО ЧЕРЕЗ 5 СЕК.</small></button>
+      <button class="unload-btn" id="unloadBtn" data-action="unload" aria-label="Сдать собранные кристаллы"><span id="unloadLabel">СДАТЬ КРИСТАЛЛЫ</span><small id="unloadTimer">ГОТОВО ЧЕРЕЗ 5 СЕК.</small></button>
     </div>
   </section>
 
@@ -183,7 +258,7 @@ const GEM_TYPES = [
   {id:'gold',name:'Золотой кристалл',value:250,weight:3,color:'#ffe18a',dark:'#bd7418',sides:7,sprite:'gold'},
   {id:'rock',name:'Взрывная порода',value:0,weight:0,color:'#9b8a86',dark:'#302d38',sides:7,hazard:true,sprite:'rock'}
 ];
-const GAME_VERSION = '0.4.0';
+const GAME_VERSION = '0.4.1';
 const GAME_AUTHOR = 'Олег Боженов';
 function buildLevels(){
  const training = [
@@ -271,8 +346,7 @@ function rulesModal(){openModal(`<h2>Правила экспедиции</h2><p 
 function aboutModal(){openModal(`<h2>Об игре</h2><p class="modal-lead">Кристальная шахта — аркадное приключение о добыче драгоценных камней в глубинах механической шахты.</p><div class="rule-list"><div class="rule"><div class="rule-icon">✦</div><p><b>Версия игры ${GAME_VERSION}</b>100 уровней: 10 обучающих и 90 аркадных испытаний с разными целями — набрать очки, поймать заданное количество или собрать кристаллы определённого цвета. Управление вагонеткой на двух рельсах, физика кристаллов, опасные сталактиты и система жизней.</p></div><div class="rule"><div class="rule-icon">✍</div><p><b>Создатель игры</b>${GAME_AUTHOR}</p></div><div class="rule"><div class="rule-icon">▧</div><p><b>Управление и сохранения</b>Рекорды и настройки сохраняются локально в браузере. Для игры не требуется подключение к серверу.</p></div></div><div class="modal-actions"><button class="btn primary" data-action="close-modal">Закрыть</button></div>`);}
 function pauseModal(){if(!state||state.paused)return;state.paused=true;state.moveDir=0;state.cartVX=0;openModal(`<h2>Экспедиция приостановлена</h2><p class="modal-lead">Передохни. Время и камни остановлены.</p><div class="modal-actions"><button class="btn primary" data-action="resume">▶ Продолжить</button><button class="btn" data-action="restart">↻ Заново</button><button class="btn ghost" data-action="exit">⌂ В меню</button></div>`);}
 function resultModal(won){const score=state?state.score:0;const l=LEVELS[state.level],o=l.objective,prog=objectiveProgress(),unit=objectiveUnit();const goal=`Цель: ${fmt(o.target)} ${objectiveTitle(o)}`;const last=state.level===LEVELS.length-1;openModal(`<h2>${won?(last?'Экспедиция завершена!':'Уровень пройден!'):'Экспедиция завершена'}</h2><p class="modal-lead">${won?'Отличная добыча. Условие уровня выполнено.':(state.lives<=0?'Три каменных удара пробили защиту вагонетки. Уровень придётся пройти заново.':'Цель не достигнута. Можно попробовать ещё раз и изменить тактику.')}</p><div class="result-score">${fmt(score)} ✦</div><div class="result-sub">${goal} · Выполнено: ${fmt(prog)} ${unit}</div><div class="result-stats"><div><b>${fmt(state.banked)}</b><span>Сдано</span></div><div><b>${state.caught}</b><span>Поймано</span></div><div><b>${state.missed}</b><span>Промахи</span></div></div><div class="modal-actions"><button class="btn primary" data-action="restart">↻ Повторить</button>${won&&!last?'<button class="btn gold" data-action="next-level">Следующий уровень →</button>':''}<button class="btn" data-action="levels">Уровни</button><button class="btn ghost" data-action="exit">В меню</button></div>`);}
-function startGame(level=0){closeModal();level=Math.max(0,Math.min(LEVELS.length-1,level));const l=LEVELS[level];state={level,elapsed:0,timeLeft:l.time,score:0,banked:0,cargoValue:0,cargoMass:0,capacity:l.capacity||10,cargo:[],caught:0,caughtByType:{},penaltyPoints:0,missed:0,lives:3,activeLane:1,cartX:640,cartVX:0,moveDir:0,cartSpeed:455,cartAccel:1850,cartFriction:2300,cartMin:100,cartMax:1180,laneVisual:1,laneFrom:1,laneTo:1,laneT:1,spawnTimer:.48,unloadCooldown:5,paused:false,over:false,combo:0,lastCatch:-99,shake:0,levelWon:false,stalagmites:[],spikeTimer:l.spikeInterval?2.2:999,invuln:0,introActive:true,introRemaining:4.5};gems=[];spills=[];particles=[];lastFrame=performance.now();showScreen('game');initCanvas();updateHUD();showLevelIntro(l.title||'Подготовка уровня',l.tutorial||'Осмотрись: самоцветы падают на двух рельсах. Перемещай вагонетку по горизонтали и выбирай правильный путь.');requestFullscreenLandscape();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);}
-function requestFullscreenLandscape(){const el=document.documentElement;const handheld=window.matchMedia('(pointer: coarse)').matches;if(handheld&&el.requestFullscreen){el.requestFullscreen().then(()=>{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(()=>{});}).catch(()=>{});}}
+function startGame(level=0){closeModal();level=Math.max(0,Math.min(LEVELS.length-1,level));const l=LEVELS[level];state={level,elapsed:0,timeLeft:l.time,score:0,banked:0,cargoValue:0,cargoMass:0,capacity:l.capacity||10,cargo:[],caught:0,caughtByType:{},penaltyPoints:0,missed:0,lives:3,activeLane:1,cartX:640,cartVX:0,moveDir:0,cartSpeed:455,cartAccel:1850,cartFriction:2300,cartMin:100,cartMax:1180,laneVisual:1,laneFrom:1,laneTo:1,laneT:1,spawnTimer:.48,unloadCooldown:5,paused:false,over:false,combo:0,lastCatch:-99,shake:0,levelWon:false,stalagmites:[],spikeTimer:l.spikeInterval?2.2:999,invuln:0,introActive:true,introRemaining:4.5};gems=[];spills=[];particles=[];lastFrame=performance.now();showScreen('game');initCanvas();updateHUD();showLevelIntro(l.title||'Подготовка уровня',l.tutorial||'Осмотрись: самоцветы падают на двух рельсах. Перемещай вагонетку по горизонтали и выбирай правильный путь.');cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);}
 function showLevelIntro(title,text){$('#introKicker').textContent=state.level<10?'ОБУЧЕНИЕ · НОВАЯ МЕХАНИКА':'АРКАДНОЕ ИСПЫТАНИЕ · НОВАЯ ЭКСПЕДИЦИЯ';$('#introTitle').textContent=title;$('#introText').textContent=text;$('#introLevel').textContent=String(state.level+1).padStart(2,'0');$('#introProgress').style.animation='none';void $('#introProgress').offsetWidth;$('#introProgress').style.animation='introLoad 4.5s linear forwards';$('#levelIntro').hidden=false;}
 function beginLevelPlay(){if(!state||!state.introActive)return;state.introActive=false;state.introRemaining=0;$('#levelIntro').hidden=true;lastFrame=performance.now();}
 function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
@@ -344,11 +418,11 @@ function unload(){if(!state||state.paused||state.over)return;if(state.unloadCool
 function burst(x,y,color,count=12){if(!settings.particles)return;for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,s=35+Math.random()*180,life=.35+Math.random()*.7;particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-25,life,max:life,color,size:1.5+Math.random()*3});}}
 function initAmbient(){const cols=['#a9e7ff','#70caff','#d4f4ff','#ffd49a'];ambient=Array.from({length:118},()=>({x:Math.random()*W,y:Math.random()*H,vy:5+Math.random()*20,vx:(Math.random()-.5)*12,r:.6+Math.random()*1.8,a:.12+Math.random()*.34,color:cols[Math.floor(Math.random()*cols.length)],phase:Math.random()*6.28}));}
 function drawAmbientScene(){const t=performance.now()/1000;const haze=[{x:300+Math.sin(t*.19)*55,y:330+Math.cos(t*.22)*18,r:210,a:.075},{x:870+Math.cos(t*.16)*75,y:405+Math.sin(t*.2)*22,r:270,a:.065},{x:1120+Math.sin(t*.14)*48,y:570,r:190,a:.055}];for(const h of haze){const g=ctx.createRadialGradient(h.x,h.y,0,h.x,h.y,h.r);g.addColorStop(0,`rgba(73,171,239,${h.a})`);g.addColorStop(1,'rgba(73,171,239,0)');ctx.fillStyle=g;ctx.fillRect(h.x-h.r,h.y-h.r,h.r*2,h.r*2);}const crystals=[[120,110,45],[395,390,30],[300,640,38],[1130,170,42],[150,690,34],[1190,610,48]];for(let i=0;i<crystals.length;i++){const [x,y,r]=crystals[i],pulse=.55+.45*Math.sin(t*1.35+i*1.7),g=ctx.createRadialGradient(x,y,1,x,y,r*(1.2+pulse*.2));g.addColorStop(0,`rgba(75,190,255,${.16*pulse})`);g.addColorStop(1,'rgba(75,190,255,0)');ctx.fillStyle=g;ctx.fillRect(x-r*1.4,y-r*1.4,r*2.8,r*2.8);}}
-function updateHUD(){if(!state)return;const l=LEVELS[state.level],o=l.objective,prog=objectiveProgress();$('#hudLevel').textContent=String(state.level+1).padStart(2,'0');$('#hudLevelName').textContent=l.name;$('#hudScore').textContent=fmt(prog);$('#hudTarget').textContent=fmt(o.target);$('#hudTargetUnit').textContent=objectiveUnit();$('#hudProgress').style.width=Math.min(100,prog/o.target*100)+'%';$('#hudMass').textContent=state.cargoMass;$('#hudCapacity').textContent=state.capacity;$('#hudCargoValue').textContent=fmt(state.cargoValue)+' ✦ в вагонетке';$('#hudTime').textContent=Math.ceil(state.timeLeft);$('#hudLives').textContent='◆ '.repeat(state.lives).trim()||'—';$('#hudLives').style.opacity=state.lives/3;$('#hudLives').parentElement.style.display=l.spikeInterval?'':'none';$('#hudMissed').textContent=`Промахи: ${state.missed}`;$('#unloadBtn').disabled=state.unloadCooldown>0||!state.cargo.length;$('#unloadLabel').textContent=state.cargo.length?'РАЗГРУЗИТЬ':'ПУСТО';$('#unloadTimer').textContent=state.unloadCooldown>0?`ГОТОВО ЧЕРЕЗ ${Math.ceil(state.unloadCooldown)} СЕК.`:'СДАТЬ ДОБЫЧУ · 5 СЕК.';updateLaneButtons();}
+function updateHUD(){if(!state)return;const l=LEVELS[state.level],o=l.objective,prog=objectiveProgress();$('#hudLevel').textContent=String(state.level+1).padStart(2,'0');$('#hudLevelName').textContent=l.name;$('#hudScore').textContent=fmt(prog);$('#hudTarget').textContent=fmt(o.target);$('#hudTargetUnit').textContent=objectiveUnit();$('#hudProgress').style.width=Math.min(100,prog/o.target*100)+'%';$('#hudMass').textContent=state.cargoMass;$('#hudCapacity').textContent=state.capacity;$('#hudCargoValue').textContent=fmt(state.cargoValue)+' ✦ в вагонетке';$('#hudTime').textContent=Math.ceil(state.timeLeft);$('#hudLives').textContent='◆ '.repeat(state.lives).trim()||'—';$('#hudLives').style.opacity=state.lives/3;$('#hudLives').parentElement.style.display=l.spikeInterval?'':'none';$('#hudMissed').textContent=`Промахи: ${state.missed}`;$('#unloadBtn').disabled=state.unloadCooldown>0||!state.cargo.length;$('#unloadLabel').textContent=state.cargo.length?'СДАТЬ КРИСТАЛЛЫ':'НЕТ ДОБЫЧИ';$('#unloadTimer').textContent=state.unloadCooldown>0?`ГОТОВО ЧЕРЕЗ ${Math.ceil(state.unloadCooldown)} СЕК.`:'СДАТЬ ДОБЫЧУ · 5 СЕК.';updateLaneButtons();}
 function endLevel(won){if(!state||state.over)return;state.over=true;state.levelWon=won;if(state.cargo.length){state.banked+=state.cargoValue;state.cargo=[];state.cargoValue=0;state.cargoMass=0;}if(won){if(!progress.cleared.includes(state.level))progress.cleared.push(state.level);progress.best[state.level]=Math.max(progress.best[state.level]||0,state.score);saveProgress();}else progress.best[state.level]=Math.max(progress.best[state.level]||0,state.score);saveProgress();cancelAnimationFrame(raf);resultModal(won);}
 function restartLevel(){const n=state?state.level:0;startGame(n);}
 function nextLevel(){const n=Math.min(LEVELS.length-1,state.level+1);startGame(n);}
-function exitToMenu(){if(state){state.moveDir=0;state.cartVX=0;}cancelAnimationFrame(raf);closeModal();$('#levelIntro').hidden=true;showScreen('menu');if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(()=>{});}
+function exitToMenu(){if(state){state.moveDir=0;state.cartVX=0;}cancelAnimationFrame(raf);closeModal();$('#levelIntro').hidden=true;showScreen('menu');}
 
 function loop(now){if(!state||state.over||state.paused)return;const dt=Math.min(.034,(now-lastFrame)/1000||.016);lastFrame=now;if(state.introActive){state.introRemaining-=dt;if(state.introRemaining<=0)beginLevelPlay();render();raf=requestAnimationFrame(loop);return;}update(dt);render();raf=requestAnimationFrame(loop);}
 function update(dt){const l=LEVELS[state.level];state.elapsed+=dt;state.timeLeft=Math.max(0,l.time-state.elapsed);state.unloadCooldown=Math.max(0,state.unloadCooldown-dt);
@@ -464,9 +538,12 @@ window.addEventListener('blur',()=>stopMove());
 // Сенсорные кнопки работают как удержание: вагонетка едет, пока палец на кнопке.
 $$('[data-move]').forEach(btn=>{const dir=Number(btn.dataset.move);btn.addEventListener('pointerdown',e=>{e.preventDefault();btn.classList.add('pressed');try{btn.setPointerCapture(e.pointerId);}catch(_){}setMoveDir(dir);});const release=e=>{if(e)e.preventDefault();btn.classList.remove('pressed');if(state&&state.moveDir===dir)stopMove();};btn.addEventListener('pointerup',release);btn.addEventListener('pointercancel',release);btn.addEventListener('lostpointercapture',release);});
 // Touch targets use CSS touch-action: manipulation; delegated click handlers work for mouse and touch.
-window.addEventListener('resize',()=>{if(canvas){const dpr=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(canvas.clientWidth*dpr);canvas.height=Math.round(canvas.clientHeight*dpr);ctx.setTransform(canvas.width/W,0,0,canvas.height/H,0,0);}});
-function initCanvas(){const dpr=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(canvas.clientWidth*dpr);canvas.height=Math.round(canvas.clientHeight*dpr);ctx.setTransform(canvas.width/W,0,0,canvas.height/H,0,0);}
-initCanvas();initAmbient();
+function syncViewport(){const vv=window.visualViewport;const h=vv&&vv.height?vv.height:window.innerHeight;const top=vv&&Number.isFinite(vv.offsetTop)?vv.offsetTop:0;document.documentElement.style.setProperty('--viewport-height',`${Math.max(240,h)}px`);document.documentElement.style.setProperty('--viewport-top',`${Math.max(0,top)}px`);if(canvas&&canvas.clientWidth>0&&canvas.clientHeight>0){const dpr=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(canvas.clientWidth*dpr);canvas.height=Math.round(canvas.clientHeight*dpr);ctx.setTransform(canvas.width/W,0,0,canvas.height/H,0,0);}}
+window.addEventListener('resize',syncViewport,{passive:true});
+window.addEventListener('orientationchange',()=>setTimeout(syncViewport,120),{passive:true});
+if(window.visualViewport){window.visualViewport.addEventListener('resize',syncViewport,{passive:true});window.visualViewport.addEventListener('scroll',syncViewport,{passive:true});}
+function initCanvas(){syncViewport();}
+syncViewport();initAmbient();
 // lightweight preview animation behind menu remains in CSS; canvas starts only when a level starts
 })();
 </script>
