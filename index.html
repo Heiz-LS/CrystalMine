@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#071525">
+<title>Кристальная шахта — вагонетка сокровищ</title>
+<style>
+:root{--cyan:#61dcff;--blue:#4d9fff;--gold:#ffd36c;--panel:rgba(7,18,34,.82);--line:rgba(154,213,255,.22);--muted:#9eb6ce;--white:#f4f8ff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#06111f;color:var(--white);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;overscroll-behavior:none}
+button{font:inherit;color:inherit;border:0;cursor:pointer;touch-action:manipulation}
+#app{position:fixed;inset:0;overflow:hidden;background:#071525}
+.screen{position:absolute;inset:0;display:none;overflow:hidden}
+.screen.active{display:flex}
+#menuScreen{align-items:center;justify-content:center;background:linear-gradient(90deg,rgba(3,11,22,.8),rgba(4,15,29,.52) 45%,rgba(4,15,29,.2)),linear-gradient(0deg,rgba(3,10,20,.72),transparent 55%),url('assets/mine-menu-animated.gif') center/cover no-repeat}
+.menu-wrap{position:relative;z-index:1;width:min(1180px,94vw);height:min(680px,92vh);display:grid;grid-template-columns:minmax(300px,1fr) minmax(300px,420px);gap:clamp(20px,5vw,70px);align-items:center;padding:clamp(18px,4vw,52px)}
+.brand{align-self:center;max-width:640px;text-shadow:0 5px 24px #00101f}
+.brand-kicker{display:inline-flex;align-items:center;gap:9px;color:#a8e8ff;font-size:clamp(10px,1.2vw,14px);font-weight:800;letter-spacing:.22em;text-transform:uppercase;margin-bottom:14px}
+.brand-kicker:before{content:"";width:30px;height:2px;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+.brand h1{margin:0;font-size:clamp(38px,6vw,76px);line-height:.96;letter-spacing:-.055em;font-weight:950;text-transform:uppercase;background:linear-gradient(180deg,#fff8d9 5%,#9be9ff 48%,#4e9be9 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 5px 2px rgba(0,0,0,.35))}
+.brand h1 span{display:block;color:#fff;background:linear-gradient(180deg,#fff,#9ab9d9);-webkit-background-clip:text;background-clip:text}
+.brand p{max-width:520px;color:#c1d4e8;font-size:clamp(13px,1.5vw,17px);line-height:1.65;margin:22px 0 0}
+.menu-card{background:linear-gradient(145deg,rgba(12,31,53,.92),rgba(4,15,29,.88));border:1px solid rgba(141,213,255,.28);border-radius:26px;padding:clamp(18px,2.5vw,28px);box-shadow:0 24px 70px rgba(0,0,0,.45),inset 0 1px rgba(255,255,255,.08);backdrop-filter:blur(14px)}
+.menu-card h2{font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:#9fc6e7;margin:0 0 16px}
+.menu-buttons{display:grid;gap:10px}
+.btn{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:12px 18px;border-radius:14px;font-weight:850;letter-spacing:.04em;transition:transform .15s,filter .15s,background .15s;border:1px solid rgba(168,218,255,.22);background:linear-gradient(180deg,rgba(44,81,116,.85),rgba(18,42,67,.95));box-shadow:inset 0 1px rgba(255,255,255,.13),0 7px 18px rgba(0,0,0,.2)}
+.btn:hover{filter:brightness(1.15);transform:translateY(-2px)}.btn:active{transform:translateY(1px) scale(.99)}
+.btn.primary{color:#08182a;background:linear-gradient(180deg,#a9f0ff,#54b9f0 58%,#3686ce);border-color:#a5eaff;box-shadow:0 0 24px rgba(72,187,255,.24),inset 0 1px #fff}
+.btn.gold{color:#2a1b05;background:linear-gradient(180deg,#fff0b0,#ffca56 60%,#d88b25);border-color:#ffe7a0}
+.btn.ghost{background:rgba(11,29,48,.65)}.btn.small{min-height:38px;padding:8px 13px;font-size:12px;border-radius:11px}
+.btn .ico{font-size:19px;line-height:1}
+.menu-foot{display:flex;justify-content:space-between;align-items:center;margin-top:18px;color:#7f9bb6;font-size:11px;letter-spacing:.08em}
+
+#menuScreen::before,#menuScreen::after{content:"";position:absolute;inset:-4%;pointer-events:none;z-index:0}
+#menuScreen::before{background:radial-gradient(ellipse at 52% 58%,rgba(67,177,255,.16),transparent 38%),radial-gradient(ellipse at 18% 22%,rgba(50,151,255,.12),transparent 30%),radial-gradient(ellipse at 84% 76%,rgba(255,173,83,.10),transparent 24%);mix-blend-mode:screen;animation:menuAurora 18s ease-in-out infinite alternate}
+#menuScreen::after{inset:0;background-image:radial-gradient(circle,rgba(197,237,255,.82) 1px,transparent 2px),radial-gradient(circle,rgba(255,206,139,.72) 1px,transparent 2px),radial-gradient(circle,rgba(99,201,255,.65) 1.2px,transparent 2.4px);background-size:173px 151px,239px 211px,311px 257px;background-position:0 0,70px 42px,120px 90px;opacity:.32;animation:menuDust 30s linear infinite}
+@keyframes menuAurora{0%{transform:translate3d(-1%,0,0) scale(1);opacity:.55}100%{transform:translate3d(1.2%,-.8%,0) scale(1.04);opacity:.9}}
+@keyframes menuDust{0%{background-position:0 0,70px 42px,120px 90px}100%{background-position:170px -260px,-170px -190px,430px -300px}}
+
+#gameScreen{background:#06111f}
+#gameCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.game-shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(2,10,20,.66),transparent 24%,transparent 72%,rgba(2,8,17,.58))}
+.hud{position:absolute;z-index:3;left:clamp(10px,2vw,28px);right:clamp(10px,2vw,28px);top:clamp(8px,1.5vh,18px);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;pointer-events:none}
+.hud-group{display:flex;gap:8px;align-items:stretch}.hud-chip{min-width:100px;padding:9px 13px;border:1px solid rgba(160,218,255,.26);border-radius:14px;background:rgba(4,17,33,.72);box-shadow:0 8px 24px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.08);backdrop-filter:blur(8px);pointer-events:auto}
+.hud-chip .cap{font-size:9px;color:#91b1cf;letter-spacing:.17em;text-transform:uppercase;font-weight:800}.hud-chip .num{font-size:clamp(16px,2vw,23px);font-weight:950;line-height:1.2;font-variant-numeric:tabular-nums}.hud-chip .sub{font-size:10px;color:#a8c5df}
+.hud-level{min-width:130px}.hud-lives{min-width:78px}.hud-lives .num{font-size:14px;letter-spacing:1px;color:#ff7884;text-shadow:0 0 9px rgba(255,75,105,.55)}.hud-progress{height:4px;border-radius:8px;background:rgba(255,255,255,.13);overflow:hidden;margin-top:5px}.hud-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#65dfff,#ffe18a);box-shadow:0 0 10px #61dcff}
+.hud-actions{display:flex;gap:8px;pointer-events:auto}.icon-btn{width:42px;height:42px;border-radius:13px;background:rgba(5,20,38,.8);border:1px solid rgba(157,213,255,.28);font-size:18px;box-shadow:0 7px 18px rgba(0,0,0,.25)}
+.game-bottom{position:absolute;z-index:4;left:clamp(10px,2vw,28px);right:clamp(10px,2vw,28px);bottom:clamp(10px,2vh,22px);display:flex;align-items:flex-end;justify-content:space-between;gap:10px;pointer-events:none}
+.lane-controls{display:flex;gap:8px;pointer-events:auto}.lane-btn{min-width:118px;min-height:48px;padding:8px 13px;border-radius:14px;background:rgba(5,19,36,.78);border:1px solid rgba(139,211,255,.3);box-shadow:0 8px 20px rgba(0,0,0,.25);font-size:11px;font-weight:900;letter-spacing:.05em;display:flex;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(8px)}
+.lane-btn b{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;background:linear-gradient(180deg,#c8f7ff,#58b6ef);color:#06213a;font-size:14px}.lane-btn.active{border-color:#ffe18a;box-shadow:0 0 0 1px rgba(255,218,126,.25),0 0 20px rgba(255,205,93,.25)}
+.move-controls{display:flex;gap:7px;pointer-events:auto}.move-btn{min-width:76px;min-height:48px;padding:6px 10px;border-radius:14px;background:rgba(5,19,36,.82);border:1px solid rgba(111,210,255,.34);box-shadow:0 8px 20px rgba(0,0,0,.25),inset 0 1px rgba(255,255,255,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;touch-action:none;user-select:none;-webkit-user-select:none}.move-btn b{font-size:14px;color:#bceeff;line-height:1.1}.move-btn span{font-size:8px;letter-spacing:.12em;color:#8fb1ce;font-weight:900}.move-btn:active,.move-btn.pressed{background:rgba(25,91,130,.9);border-color:#8de4ff;box-shadow:0 0 18px rgba(72,190,255,.24)}.lane-btn:disabled{opacity:.35;filter:grayscale(1);cursor:not-allowed}
+.unload-btn{pointer-events:auto;min-width:160px;min-height:52px;border-radius:15px;background:linear-gradient(180deg,#fff0b4,#f8b94c 65%,#c87a24);color:#271805;border:1px solid #ffdf91;box-shadow:0 8px 25px rgba(0,0,0,.28),0 0 22px rgba(255,190,68,.18);font-size:12px;font-weight:950;letter-spacing:.06em}.unload-btn:disabled{filter:grayscale(.75);opacity:.65;cursor:not-allowed}.unload-btn small{display:block;font-size:9px;letter-spacing:.03em;opacity:.72;margin-top:2px}
+.tutorial{position:absolute;z-index:5;top:clamp(72px,12vh,112px);left:50%;transform:translateX(-50%);width:min(560px,88vw);padding:12px 16px;border-radius:16px;background:rgba(5,18,33,.9);border:1px solid rgba(130,218,255,.4);box-shadow:0 12px 36px rgba(0,0,0,.32);text-align:center;backdrop-filter:blur(10px)}
+.tutorial strong{display:block;color:#aeeeff;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:5px}.tutorial span{font-size:13px;line-height:1.4;color:#e6f2ff}.tutorial button{margin-left:8px;background:none;color:#ffdc8a;font-weight:900;font-size:11px}
+
+.level-intro{position:absolute;z-index:9;inset:0;display:flex;align-items:center;justify-content:center;padding:18px;background:radial-gradient(ellipse at center,rgba(5,18,33,.48),rgba(2,8,17,.82));backdrop-filter:blur(5px)}
+.level-intro[hidden]{display:none!important}
+.intro-card{position:relative;width:min(650px,92vw);padding:clamp(22px,4vw,38px);border-radius:24px;text-align:center;overflow:hidden;background:linear-gradient(145deg,rgba(9,31,53,.96),rgba(3,13,27,.97));border:1px solid rgba(126,219,255,.48);box-shadow:0 24px 90px rgba(0,0,0,.58),0 0 45px rgba(42,165,235,.14),inset 0 1px rgba(255,255,255,.12);animation:introRise .55s cubic-bezier(.2,.8,.2,1) both}
+.intro-card::before{content:"";position:absolute;inset:-70% -20%;pointer-events:none;background:linear-gradient(110deg,transparent 40%,rgba(107,210,255,.08) 50%,transparent 60%);transform:translateX(-60%);animation:introShimmer 4s ease-in-out infinite}
+.intro-emblem{width:42px;height:42px;display:grid;place-items:center;margin:0 auto 12px;border-radius:13px;color:#102a3e;font-size:23px;background:linear-gradient(145deg,#e4fbff,#61caff 65%,#267bbd);box-shadow:0 0 28px rgba(80,196,255,.4)}
+.intro-kicker{color:#9ce8ff;font-size:10px;font-weight:950;letter-spacing:.2em;text-transform:uppercase}
+.intro-card h2{margin:8px 0 10px;font-size:clamp(22px,4vw,34px);line-height:1.1;color:#f5fbff;text-shadow:0 3px 16px rgba(0,0,0,.35)}
+.intro-card p{position:relative;z-index:1;max-width:540px;margin:0 auto;color:#c9dced;font-size:clamp(12px,1.7vw,15px);line-height:1.65}
+.intro-loading{height:5px;margin:24px 0 17px;border-radius:8px;background:rgba(255,255,255,.12);overflow:hidden}
+.intro-loading i{display:block;width:0;height:100%;border-radius:8px;background:linear-gradient(90deg,#4caaff,#8beeff,#ffe08a);box-shadow:0 0 14px #65dfff;animation:introLoad 4.5s linear forwards}
+.intro-footer{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:12px;color:#7898b5;font-size:9px;font-weight:900;letter-spacing:.14em}
+.intro-footer b{color:#d8f5ff;font-size:13px;margin-left:5px}
+@keyframes introRise{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes introShimmer{0%,35%{transform:translateX(-65%)}80%,100%{transform:translateX(65%)}}
+@keyframes introLoad{from{width:0}to{width:100%}}
+@media(max-height:430px) and (orientation:landscape){.intro-card{padding:15px 22px}.intro-emblem{width:30px;height:30px;margin-bottom:7px;font-size:17px}.intro-card h2{font-size:22px;margin:5px 0}.intro-loading{margin:12px 0}.intro-card p{font-size:11px;line-height:1.4}}
+
+.toast{position:absolute;z-index:8;left:50%;top:48%;transform:translate(-50%,-50%) scale(.96);opacity:0;pointer-events:none;padding:11px 18px;border-radius:30px;background:rgba(5,17,31,.92);border:1px solid rgba(151,218,255,.35);box-shadow:0 10px 35px rgba(0,0,0,.4);font-weight:900;font-size:13px;transition:opacity .2s,transform .2s;white-space:nowrap}.toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.modal-layer{position:absolute;z-index:10;inset:0;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(2,8,17,.72);backdrop-filter:blur(9px)}.modal-layer.show{display:flex}
+.modal{width:min(650px,94vw);max-height:min(86vh,720px);overflow:auto;border-radius:24px;padding:clamp(18px,3vw,30px);background:linear-gradient(145deg,rgba(13,35,59,.98),rgba(4,15,29,.98));border:1px solid rgba(144,213,255,.32);box-shadow:0 25px 90px rgba(0,0,0,.55),inset 0 1px rgba(255,255,255,.08)}
+.modal h2{margin:0 0 7px;font-size:clamp(22px,3vw,30px);letter-spacing:-.03em}.modal-lead{margin:0 0 20px;color:#9fb9d2;font-size:13px;line-height:1.5}.modal-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}.level-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}.level-card{min-height:92px;border-radius:14px;padding:10px 6px;background:linear-gradient(145deg,rgba(39,75,108,.7),rgba(8,24,42,.9));border:1px solid rgba(137,200,241,.2);text-align:center}.level-card:hover{border-color:#75dfff;filter:brightness(1.12)}.level-card .n{font-size:22px;font-weight:950;color:#d8f5ff}.level-card .name{font-size:9px;line-height:1.25;color:#a9c3db;margin-top:4px}.level-card .best{font-size:9px;color:#ffdc83;margin-top:4px}
+.rule-list{display:grid;gap:12px}.rule{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}.rule-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:rgba(79,163,217,.17);font-size:18px}.rule p{margin:0;color:#b6cce0;font-size:13px;line-height:1.5}.rule b{display:block;color:#f1f7ff;margin-bottom:2px}
+.setting-row{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:13px 0;border-bottom:1px solid rgba(150,204,242,.13)}.setting-row:last-child{border:0}.setting-row b{font-size:14px}.setting-row small{display:block;color:#8faac5;font-size:11px;margin-top:3px}.toggle{width:48px;height:27px;border-radius:20px;background:#29435b;padding:3px;flex:none}.toggle i{display:block;width:21px;height:21px;border-radius:50%;background:#c7d9e8;transition:transform .18s}.toggle.on{background:#2d9ed2}.toggle.on i{transform:translateX(21px);background:white}
+.result-score{font-size:clamp(34px,6vw,58px);font-weight:1000;color:#ffe08a;letter-spacing:-.04em;margin:8px 0}.result-sub{color:#abc5dd;font-size:13px}.result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px}.result-stats div{padding:12px;border-radius:12px;background:rgba(255,255,255,.05);text-align:center}.result-stats b{display:block;font-size:19px}.result-stats span{font-size:9px;color:#9bb5ce;text-transform:uppercase;letter-spacing:.08em}
+#rotateGate{position:absolute;z-index:50;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:28px;background:radial-gradient(circle at 50% 40%,#173d61,#06111f 72%)}.rotate-inner{max-width:320px}.rotate-icon{font-size:62px;display:block;margin-bottom:18px;animation:tilt 2s ease-in-out infinite}.rotate-inner h2{margin:0 0 8px;font-size:23px}.rotate-inner p{margin:0;color:#a7c0d8;font-size:13px;line-height:1.5}@keyframes tilt{0%,100%{transform:rotate(0)}50%{transform:rotate(90deg)}}
+@media(orientation:portrait){#rotateGate{display:flex}#menuScreen,#gameScreen{visibility:hidden}}
+@media(max-width:760px){.menu-wrap{grid-template-columns:1fr;align-content:center;gap:18px;padding:18px}.brand{text-align:center}.brand-kicker{justify-content:center;margin-bottom:9px}.brand p{margin:12px auto 0;max-width:450px;font-size:12px}.menu-card{width:min(430px,100%);margin:0 auto;padding:17px;border-radius:20px}.menu-card h2{margin-bottom:10px}.menu-buttons{grid-template-columns:1fr 1fr;gap:8px}.menu-buttons .primary{grid-column:1/-1}.btn{min-height:42px;font-size:12px}.menu-foot{margin-top:12px}.hud-chip{min-width:66px;padding:7px 8px;border-radius:11px}.hud-lives{min-width:62px}.hud-lives .num{font-size:12px;letter-spacing:0}.hud-chip .cap{font-size:8px}.hud-chip .num{font-size:17px}.hud-level{min-width:100px}.icon-btn{width:36px;height:36px}.lane-btn{min-width:82px;min-height:42px;padding:6px 7px;font-size:9px}.lane-btn b{width:22px;height:22px}.move-controls{gap:5px}.move-btn{min-width:58px;min-height:42px;padding:5px 6px}.move-btn b{font-size:12px}.move-btn span{font-size:7px}.unload-btn{min-width:112px;min-height:44px;font-size:10px}.game-bottom{bottom:8px}.tutorial{top:58px;padding:9px 12px}.tutorial span{font-size:11px}.level-grid{grid-template-columns:repeat(5,1fr);gap:6px}.level-card{min-height:76px}.level-card .n{font-size:19px}}
+@media(max-height:430px) and (orientation:landscape){.menu-wrap{height:96vh;padding:12px 24px;gap:24px}.brand h1{font-size:clamp(30px,6vh,50px)}.brand p{font-size:11px;margin-top:10px}.menu-card{padding:14px}.menu-buttons{gap:7px}.btn{min-height:36px;padding:7px 12px;font-size:11px}.menu-foot{margin-top:8px}.hud{top:6px}.hud-chip{padding:6px 9px}.hud-chip .num{font-size:16px}.game-bottom{bottom:6px;gap:6px}.lane-btn{min-height:38px}.move-btn{min-height:38px}.unload-btn{min-height:40px}.tutorial{top:53px}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+.modal:has(.level-grid){width:min(1040px,97vw)}
+.level-grid{grid-template-columns:repeat(10,minmax(0,1fr));gap:6px}
+.level-card{min-height:68px;padding:7px 3px}
+.level-card .n{font-size:18px}.level-card .name{font-size:8px;min-height:20px}.level-card .best{font-size:8px}
+.level-card.locked{opacity:.42;filter:grayscale(.65);cursor:not-allowed}
+.level-section-title{margin:16px 0 8px;color:#8fe1ff;font-size:11px;letter-spacing:.16em}
+@media(max-width:760px){.level-grid{grid-template-columns:repeat(8,minmax(0,1fr));gap:5px}.level-card{min-height:62px}.level-card .n{font-size:16px}.level-card .name{font-size:7px}.level-card .best{font-size:7px}}
+
+</style>
+</head>
+<body>
+<div id="app">
+  <section id="menuScreen" class="screen active">
+    <div class="menu-wrap">
+      <div class="brand">
+        <div class="brand-kicker">Экспедиция начинается</div>
+        <h1>Кристальная<span>шахта</span></h1>
+        <p>Управляй вагонеткой, лавируй между двумя рельсами и лови самоцветы. Каждый кристалл подчиняется физике — промахнёшься, и он отскочит мимо кузова.</p>
+      </div>
+      <div class="menu-card">
+        <h2>Главное меню</h2>
+        <div class="menu-buttons">
+          <button class="btn primary" data-action="play"><span class="ico">⛏</span> Начать экспедицию</button>
+          <button class="btn" data-action="levels"><span class="ico">▦</span> Уровни</button>
+          <button class="btn" data-action="rules"><span class="ico">ⓘ</span> Правила</button>
+          <button class="btn" data-action="settings"><span class="ico">⚙</span> Настройки</button>
+          <button class="btn ghost" data-action="about"><span class="ico">✦</span> Об игре</button>
+        </div>
+        <div class="menu-foot"><span>CRYSTAL MINE · АРКАДА</span><span>◆ 100 УРОВНЕЙ</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="gameScreen" class="screen">
+    <canvas id="gameCanvas" width="1280" height="720" aria-label="Игровая сцена Кристальная шахта"></canvas>
+    <div class="game-shade"></div>
+    <div class="hud">
+      <div class="hud-group">
+        <div class="hud-chip hud-level"><div class="cap">Уровень <span id="hudLevel">01</span></div><div class="num" id="hudLevelName">Первые кристаллы</div><div class="hud-progress"><i id="hudProgress"></i></div></div>
+        <div class="hud-chip"><div class="cap">Прогресс цели</div><div class="num" id="hudScore">0</div><div class="sub">из <span id="hudTarget">90</span> <span id="hudTargetUnit">✦</span></div></div>
+      </div>
+      <div class="hud-group">
+        <div class="hud-chip hud-lives"><div class="cap">Жизни</div><div class="num" id="hudLives">◆ ◆ ◆</div><div class="sub">опасности</div></div>
+        <div class="hud-chip"><div class="cap">Груз</div><div class="num"><span id="hudMass">0</span>/<span id="hudCapacity">10</span></div><div class="sub" id="hudCargoValue">0 ✦ в вагонетке</div></div>
+        <div class="hud-chip"><div class="cap">Время</div><div class="num" id="hudTime">45</div><div class="sub" id="hudMissed">Промахи: 0</div></div>
+        <div class="hud-actions"><button class="icon-btn" data-action="pause" aria-label="Пауза">Ⅱ</button><button class="icon-btn" data-action="exit" aria-label="В меню">⌂</button></div>
+      </div>
+    </div>
+    <div class="level-intro" id="levelIntro" hidden>
+      <div class="intro-card">
+        <div class="intro-emblem">✦</div>
+        <div class="intro-kicker" id="introKicker">ПОДГОТОВКА ЭКСПЕДИЦИИ</div>
+        <h2 id="introTitle">Новая механика</h2>
+        <p id="introText"></p>
+        <div class="intro-loading"><i id="introProgress"></i></div>
+        <div class="intro-footer"><span>ШАХТНЫЙ УРОВЕНЬ <b id="introLevel">01</b></span><button class="btn primary small" data-action="start-level-now">В ШАХТУ <span>→</span></button></div>
+      </div>
+    </div>
+    <div class="toast" id="toast"></div>
+    <div class="game-bottom">
+      <div class="lane-controls">
+        <button class="lane-btn" id="laneRear" data-action="lane-rear"><b>W</b><span>ДАЛЬНИЙ<br>РЕЛЬС</span></button>
+        <button class="lane-btn" id="laneFront" data-action="lane-front"><b>S</b><span>БЛИЖНИЙ<br>РЕЛЬС</span></button>
+      </div>
+      <div class="move-controls" aria-label="Управление вагонеткой">
+        <button class="move-btn" data-move="-1" aria-label="Двигаться влево"><b>◀ A</b><span>ВЛЕВО</span></button>
+        <button class="move-btn" data-move="1" aria-label="Двигаться вправо"><b>D ▶</b><span>ВПРАВО</span></button>
+      </div>
+      <button class="unload-btn" id="unloadBtn" data-action="unload"><span id="unloadLabel">РАЗГРУЗИТЬ</span><small id="unloadTimer">ГОТОВО ЧЕРЕЗ 5 СЕК.</small></button>
+    </div>
+  </section>
+
+  <div class="modal-layer" id="modalLayer"><div class="modal" id="modalContent"></div></div>
+  <div id="rotateGate"><div class="rotate-inner"><span class="rotate-icon">📱</span><h2>Поверните устройство</h2><p>«Кристальная шахта» рассчитана на горизонтальный экран. Поверните телефон, чтобы продолжить экспедицию.</p></div></div>
+</div>
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const W = 1280, H = 720;
+const canvas = $('#gameCanvas'), ctx = canvas.getContext('2d');
+const gameBg = new Image(), menuBg = new Image();
+gameBg.src = 'assets/mine-game.webp'; menuBg.src = 'assets/mine-menu.webp';
+const GEM_SPRITE_FILES = {quartz:'assets/sprites/quartz.png', ruby:'assets/sprites/ruby.png', emerald:'assets/sprites/emerald.png', sapphire:'assets/sprites/sapphire.png', amethyst:'assets/sprites/amethyst.png', diamond:'assets/sprites/diamond.png', gold:'assets/sprites/gold.png', rock:'assets/sprites/rock.png'};
+const gemSprites = {};
+for(const [id,src] of Object.entries(GEM_SPRITE_FILES)){ const img = new Image(); img.src = src; gemSprites[id] = img; }
+const RAIL_Y = [515, 606];
+const LANE_GLOW = ['#ff5268','#4dbdff']; // дальний рельс — красный, ближний — синий
+const GEM_TYPES = [
+  {id:'quartz',name:'Кварц',value:10,weight:1,color:'#62eaff',dark:'#148bb9',sides:6,sprite:'quartz'},
+  {id:'ruby',name:'Рубин',value:25,weight:2,color:'#ff667c',dark:'#a91e49',sides:6,sprite:'ruby'},
+  {id:'emerald',name:'Изумруд',value:35,weight:2,color:'#5bffc0',dark:'#07865c',sides:6,sprite:'emerald'},
+  {id:'sapphire',name:'Сапфир',value:50,weight:3,color:'#66a8ff',dark:'#2850b6',sides:7,sprite:'sapphire'},
+  {id:'amethyst',name:'Аметист',value:75,weight:3,color:'#d18bff',dark:'#7436ae',sides:6,sprite:'amethyst'},
+  {id:'diamond',name:'Алмаз',value:150,weight:4,color:'#f2fbff',dark:'#7acbe9',sides:8,sprite:'diamond'},
+  {id:'gold',name:'Золотой кристалл',value:250,weight:3,color:'#ffe18a',dark:'#bd7418',sides:7,sprite:'gold'},
+  {id:'rock',name:'Взрывная порода',value:0,weight:0,color:'#9b8a86',dark:'#302d38',sides:7,hazard:true,sprite:'rock'}
+];
+const GAME_VERSION = '0.4.0';
+const GAME_AUTHOR = 'Олег Боженов';
+function buildLevels(){
+ const training = [
+  {name:'Первый самоцвет',objective:{type:'score',target:90},time:48,interval:1.62,fall:205,cart:112,kinds:1,lanes:1,capacity:10,tutorial:'Управляй вагонеткой клавишами A / D или стрелками. Совмещай кузов с падающими кристаллами и набери первые 90 очков.',title:'Механика 1 · Управление и ловля'},
+  {name:'Два пути',objective:{type:'score',target:150},time:52,interval:1.48,fall:220,cart:118,kinds:2,lanes:2,capacity:10,tutorial:'Теперь доступны два рельса. W — дальний путь с красным свечением, S — ближний с синим. Выбирай правильную дорожку перед ловлей.',title:'Механика 2 · Переключение рельсов'},
+  {name:'Цвет и ценность',objective:{type:'score',target:220},time:56,interval:1.34,fall:238,cart:125,kinds:4,lanes:2,capacity:10,tutorial:'У каждого самоцвета своя стоимость и масса. Более редкие кристаллы приносят больше очков, но быстрее заполняют кузов.',title:'Механика 3 · Стоимость самоцветов'},
+  {name:'Дюжина находок',objective:{type:'count',target:12},time:58,interval:1.25,fall:245,cart:130,kinds:4,lanes:2,capacity:12,tutorial:'В этом испытании важны не очки, а количество находок. Поймай 12 любых обычных кристаллов. Опасная порода в счёт не идёт.',title:'Механика 4 · Цель по количеству'},
+  {name:'Полная вагонетка',objective:{type:'score',target:320},time:60,interval:1.18,fall:255,cart:136,kinds:5,lanes:2,capacity:9,tutorial:'Следи за массой груза. При перегрузе камни будут вываливаться. Разгружай добычу кнопкой — теперь она готова каждые пять секунд.',title:'Механика 5 · Масса и разгрузка'},
+  {name:'Зелёная жила',objective:{type:'color',color:'emerald',target:7,penalty:18},time:62,interval:1.12,fall:265,cart:142,kinds:5,lanes:2,capacity:11,tutorial:'Задача изменилась: нужно собрать 7 изумрудов. Другие кристаллы поймать можно, но за каждый неподходящий цвет снимаются очки.',title:'Механика 6 · Сбор заданного цвета'},
+  {name:'Острые тени',objective:{type:'count',target:15},time:64,interval:1.06,fall:278,cart:148,kinds:5,lanes:2,capacity:11,spikeInterval:7.4,tutorial:'С потолка начали падать сталактиты. Красное предупреждение показывает место удара. У тебя три жизни — уворачивайся движением и сменой рельса.',title:'Механика 7 · Сталактиты и жизни'},
+  {name:'Взрывная порода',objective:{type:'score',target:520},time:66,interval:1.00,fall:290,cart:154,kinds:6,lanes:2,capacity:12,spikeInterval:6.8,hazardChance:.10,tutorial:'Тёмные раскалённые глыбы — взрывная порода. Не лови её: она выбивает часть груза из вагонетки. Продолжай собирать обычные самоцветы.',title:'Механика 8 · Опасная руда'},
+  {name:'Двадцать самоцветов',objective:{type:'count',target:20},time:70,interval:.94,fall:302,cart:160,kinds:6,lanes:2,capacity:13,spikeInterval:6.2,hazardChance:.10,doubleChance:.16,tutorial:'Потоки ускорились, иногда одновременно падают два камня. Для победы нужно поймать 20 обычных самоцветов, независимо от их стоимости.',title:'Механика 9 · Ускоренный поток'},
+  {name:'Сердце шахты',objective:{type:'score',target:720},time:72,interval:.88,fall:315,cart:168,kinds:7,lanes:2,capacity:13,spikeInterval:5.8,hazardChance:.12,doubleChance:.2,tutorial:'Финальная тренировка объединяет все механики: два рельса, редкие камни, разгрузку, опасную породу и камнепад. Набери 720 очков.',title:'Механика 10 · Полная экспедиция'}
+ ];
+ const sectors = ['Синий разлом','Забытая жила','Кристальный мост','Ржавый штрек','Гулкие глубины','Лунный пласт','Сердце гранита','Золотой уступ','Туманный тоннель','Старая шахта','Подземный каскад','Геодный зал','Глубокий горизонт','Пещера эха','Северный забой','Чёрный уступ','Светящийся пласт','Драконья жила','Медный коридор','Ледяная полость','Зал самоцветов','Рубиновый склон','Изумрудный колодец','Алмазный уступ','Сапфировая трещина','Аметистовый грот','Пылающий пласт','Каменный лабиринт','Нижний горизонт','Последний забой'];
+ const colorTypes = ['emerald','ruby','sapphire','amethyst','quartz','diamond','gold'];
+ const colorNames = {emerald:'изумруды',ruby:'рубины',sapphire:'сапфиры',amethyst:'аметисты',quartz:'кварц',diamond:'алмазы',gold:'золотые кристаллы'};
+ const arcade=[];
+ for(let j=1;j<=90;j++){
+  const d=j/90, idx=j-1, pattern=idx%6;
+  let objective;
+  if(pattern===0||pattern===3){objective={type:'score',target:Math.round(780+d*3400+(j%4)*95)};}
+  else if(pattern===1||pattern===4){objective={type:'count',target:14+Math.round(d*22)+(j%3)};}
+  else {const color=colorTypes[Math.floor(idx/2)%colorTypes.length];objective={type:'color',color,target:7+Math.round(d*15)+(j%3),penalty:18+Math.round(d*22)};}
+  const interval=Math.max(.46,1.12-d*.55);
+  const time=Math.round(66+d*27);
+  const spike=(j>=5 && j%3!==1)?Math.max(2.7,6.7-d*3.5):0;
+  const kinds=Math.min(7,4+Math.floor(d*3));
+  const sector=sectors[idx%sectors.length];
+  const round=Math.floor(idx/sectors.length)+1;
+  let tutorial;
+  if(objective.type==='score') tutorial=`Цель экспедиции — набрать ${objective.target.toLocaleString('ru-RU')} очков. Выбирай ценные камни, следи за массой и не теряй темп.`;
+  else if(objective.type==='count') tutorial=`Для победы нужно поймать ${objective.target} любых обычных самоцветов. Стоимость камней не важна — важен точный приём.`;
+  else tutorial=`Собери ${objective.target} шт.: ${colorNames[objective.color]}. За каждый самоцвет другого цвета снимается ${objective.penalty} очков. Следи за оттенком кристалла.`;
+  arcade.push({name:`${sector} · ${round}`,objective,time,interval,fall:300+d*220,cart:155+d*92,kinds,lanes:2,capacity:11+Math.floor(d*4),spikeInterval:spike||undefined,hazardChance:.08+d*.12,doubleChance:.12+d*.32,tutorial,title:objective.type==='score'?'Аркада · Набор очков':objective.type==='count'?'Аркада · Количество находок':`Аркада · ${colorNames[objective.color]}`});
+ }
+ return training.concat(arcade);
+}
+const LEVELS = buildLevels();
+const defaultSettings = {sound:true,particles:true,shake:true};
+let settings = {...defaultSettings};
+try { settings = {...defaultSettings,...JSON.parse(localStorage.getItem('crystalMineSettings')||'{}')}; } catch(e){}
+let progress = {cleared:[],best:{}};
+try { progress = {...progress,...JSON.parse(localStorage.getItem('crystalMineProgressV040')||'{}')}; } catch(e){}
+let state = null, raf = 0, lastFrame = 0, ambient = [], particles = [], gems = [], spills = [], toastTimer = 0, audioCtx = null;
+let currentScreen = 'menu';
+
+function saveSettings(){localStorage.setItem('crystalMineSettings',JSON.stringify(settings));}
+function saveProgress(){localStorage.setItem('crystalMineProgressV040',JSON.stringify(progress));}
+function showScreen(name){currentScreen=name; $('#menuScreen').classList.toggle('active',name==='menu'); $('#gameScreen').classList.toggle('active',name==='game');}
+function fmt(n){return Math.max(0,Math.floor(n)).toLocaleString('ru-RU');}
+const GEM_LABELS={quartz:'кварца',ruby:'рубинов',emerald:'изумрудов',sapphire:'сапфиров',amethyst:'аметистов',diamond:'алмазов',gold:'золотых кристаллов'};
+function objectiveProgress(){if(!state)return 0;const o=LEVELS[state.level].objective;if(o.type==='score')return state.score;if(o.type==='count')return state.caught;return state.caughtByType[o.color]||0;}
+function objectiveUnit(){const o=LEVELS[state.level].objective;if(o.type==='score')return '✦';if(o.type==='count')return 'камней';return GEM_LABELS[o.color]||'камней';}
+function objectiveComplete(){const o=LEVELS[state.level].objective;return objectiveProgress()>=o.target;}
+function objectiveTitle(o){if(o.type==='score')return 'очков';if(o.type==='count')return 'самоцветов';return GEM_LABELS[o.color]||'самоцветов';}
+function isLevelUnlocked(i){return i===0||progress.cleared.includes(i-1);}
+function beep(freq=540,duration=.08,type='sine'){
+ if(!settings.sound)return;
+ try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(.0001,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.07,audioCtx.currentTime+.012);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+duration);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+duration+.02);}catch(e){}
+}
+function showToast(text){const el=$('#toast');el.textContent=text;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),1450);}
+function openModal(html){$('#modalContent').innerHTML=html;$('#modalLayer').classList.add('show');}
+function closeModal(){$('#modalLayer').classList.remove('show');}
+function settingsModal(){openModal(`<h2>Настройки</h2><p class="modal-lead">Параметры сохраняются на этом устройстве.</p>
+ <div class="setting-row"><div><b>Звуковые эффекты</b><small>Короткие сигналы при сборе и разгрузке</small></div><button class="toggle ${settings.sound?'on':''}" data-action="toggle-sound"><i></i></button></div>
+ <div class="setting-row"><div><b>Частицы и свечение</b><small>Искры, пыль и эффекты самоцветов</small></div><button class="toggle ${settings.particles?'on':''}" data-action="toggle-particles"><i></i></button></div>
+ <div class="setting-row"><div><b>Тряска при перегрузе</b><small>Лёгкий визуальный отклик вагонетки</small></div><button class="toggle ${settings.shake?'on':''}" data-action="toggle-shake"><i></i></button></div>
+ <div class="modal-actions"><button class="btn primary" data-action="close-modal">Готово</button></div>`);}
+function levelsModal(){
+ const makeCards=(from,to)=>LEVELS.slice(from,to).map((l,k)=>{const i=from+k,unlocked=isLevelUnlocked(i),done=progress.cleared.includes(i),best=progress.best[i];return `<button class="level-card ${unlocked?'':'locked'}" data-action="start-level" data-level="${i}" ${unlocked?'':'disabled'}><div class="n">${String(i+1).padStart(2,'0')}</div><div class="name">${l.name}</div><div class="best">${done?'★ ПРОЙДЕН':(!unlocked?'ЗАКРЫТ':(best?'Рекорд '+fmt(best):'ДОСТУПЕН'))}</div></button>`;}).join('');
+ const done=progress.cleared.length;
+ openModal(`<h2>Выбор уровня</h2><p class="modal-lead">100 испытаний: 10 обучающих этапов и 90 аркадных уровней. Пройдено ${done} из 100. Новые этапы открываются последовательно.</p><h3 class="level-section-title">ОБУЧЕНИЕ · 01–10</h3><div class="level-grid">${makeCards(0,10)}</div><h3 class="level-section-title">АРКАДА · 11–100</h3><div class="level-grid">${makeCards(10,100)}</div><div class="modal-actions"><button class="btn ghost" data-action="close-modal">Назад</button></div>`);
+}
+function rulesModal(){openModal(`<h2>Правила экспедиции</h2><p class="modal-lead">Управляй вагонеткой, лови самоцветы физически и доставляй добычу на поверхность.</p><div class="rule-list">
+ <div class="rule"><div class="rule-icon">🚋</div><p><b>Управление вагонеткой</b>A / D или ← / → — двигаться влево и вправо. У вагонетки есть ускорение и инерция, поэтому заранее корректируй позицию.</p></div>
+ <div class="rule"><div class="rule-icon">W / S</div><p><b>Два рельса</b>W — дальний рельс, S — ближний. Красный ореол означает дальний путь, синий — ближний. На телефоне используй сенсорные кнопки.</p></div>
+ <div class="rule"><div class="rule-icon">💎</div><p><b>Физика и точная ловля</b>Кристаллы падают под действием гравитации, вращаются, сталкиваются и отскакивают. Самоцвет попадёт в кузов только при точном совпадении с открытой частью вагонетки на правильном рельсе. Промахнувшийся камень отскочит от пути и не даст очков.</p></div>
+ <div class="rule"><div class="rule-icon">✨</div><p><b>Ценность и масса</b>Внутренний цвет показывает тип самоцвета и его стоимость. Разные камни имеют разный вес и занимают место в кузове.</p></div>
+ <div class="rule"><div class="rule-icon">⚖️</div><p><b>Не перегружай</b>При превышении грузоподъёмности камни физически вываливаются, а их стоимость теряется.</p></div>
+ <div class="rule"><div class="rule-icon">⏱</div><p><b>Разгрузка</b>Раз в 5 секунд нажимай «Разгрузить». Добыча отправится в хранилище, а вагонетка освободится.</p></div>
+ <div class="rule"><div class="rule-icon">🪨</div><p><b>Камнепад и жизни</b>Начиная с шестого уровня сверху падают сталактиты. Красный сигнал заранее показывает место удара. Попадание отнимает одну жизнь; после трёх попаданий уровень начинается заново.</p></div>
+ <div class="rule"><div class="rule-icon">⌨</div><p><b>Клавиши</b>A / D или ← / → — движение; W / S или ↑ / ↓ — смена рельса; E / Пробел — разгрузка; P / Esc — пауза.</p></div>
+ </div><div class="modal-actions"><button class="btn primary" data-action="close-modal">Понятно</button></div>`);}
+function aboutModal(){openModal(`<h2>Об игре</h2><p class="modal-lead">Кристальная шахта — аркадное приключение о добыче драгоценных камней в глубинах механической шахты.</p><div class="rule-list"><div class="rule"><div class="rule-icon">✦</div><p><b>Версия игры ${GAME_VERSION}</b>100 уровней: 10 обучающих и 90 аркадных испытаний с разными целями — набрать очки, поймать заданное количество или собрать кристаллы определённого цвета. Управление вагонеткой на двух рельсах, физика кристаллов, опасные сталактиты и система жизней.</p></div><div class="rule"><div class="rule-icon">✍</div><p><b>Создатель игры</b>${GAME_AUTHOR}</p></div><div class="rule"><div class="rule-icon">▧</div><p><b>Управление и сохранения</b>Рекорды и настройки сохраняются локально в браузере. Для игры не требуется подключение к серверу.</p></div></div><div class="modal-actions"><button class="btn primary" data-action="close-modal">Закрыть</button></div>`);}
+function pauseModal(){if(!state||state.paused)return;state.paused=true;state.moveDir=0;state.cartVX=0;openModal(`<h2>Экспедиция приостановлена</h2><p class="modal-lead">Передохни. Время и камни остановлены.</p><div class="modal-actions"><button class="btn primary" data-action="resume">▶ Продолжить</button><button class="btn" data-action="restart">↻ Заново</button><button class="btn ghost" data-action="exit">⌂ В меню</button></div>`);}
+function resultModal(won){const score=state?state.score:0;const l=LEVELS[state.level],o=l.objective,prog=objectiveProgress(),unit=objectiveUnit();const goal=`Цель: ${fmt(o.target)} ${objectiveTitle(o)}`;const last=state.level===LEVELS.length-1;openModal(`<h2>${won?(last?'Экспедиция завершена!':'Уровень пройден!'):'Экспедиция завершена'}</h2><p class="modal-lead">${won?'Отличная добыча. Условие уровня выполнено.':(state.lives<=0?'Три каменных удара пробили защиту вагонетки. Уровень придётся пройти заново.':'Цель не достигнута. Можно попробовать ещё раз и изменить тактику.')}</p><div class="result-score">${fmt(score)} ✦</div><div class="result-sub">${goal} · Выполнено: ${fmt(prog)} ${unit}</div><div class="result-stats"><div><b>${fmt(state.banked)}</b><span>Сдано</span></div><div><b>${state.caught}</b><span>Поймано</span></div><div><b>${state.missed}</b><span>Промахи</span></div></div><div class="modal-actions"><button class="btn primary" data-action="restart">↻ Повторить</button>${won&&!last?'<button class="btn gold" data-action="next-level">Следующий уровень →</button>':''}<button class="btn" data-action="levels">Уровни</button><button class="btn ghost" data-action="exit">В меню</button></div>`);}
+function startGame(level=0){closeModal();level=Math.max(0,Math.min(LEVELS.length-1,level));const l=LEVELS[level];state={level,elapsed:0,timeLeft:l.time,score:0,banked:0,cargoValue:0,cargoMass:0,capacity:l.capacity||10,cargo:[],caught:0,caughtByType:{},penaltyPoints:0,missed:0,lives:3,activeLane:1,cartX:640,cartVX:0,moveDir:0,cartSpeed:455,cartAccel:1850,cartFriction:2300,cartMin:100,cartMax:1180,laneVisual:1,laneFrom:1,laneTo:1,laneT:1,spawnTimer:.48,unloadCooldown:5,paused:false,over:false,combo:0,lastCatch:-99,shake:0,levelWon:false,stalagmites:[],spikeTimer:l.spikeInterval?2.2:999,invuln:0,introActive:true,introRemaining:4.5};gems=[];spills=[];particles=[];lastFrame=performance.now();showScreen('game');initCanvas();updateHUD();showLevelIntro(l.title||'Подготовка уровня',l.tutorial||'Осмотрись: самоцветы падают на двух рельсах. Перемещай вагонетку по горизонтали и выбирай правильный путь.');requestFullscreenLandscape();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);}
+function requestFullscreenLandscape(){const el=document.documentElement;const handheld=window.matchMedia('(pointer: coarse)').matches;if(handheld&&el.requestFullscreen){el.requestFullscreen().then(()=>{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(()=>{});}).catch(()=>{});}}
+function showLevelIntro(title,text){$('#introKicker').textContent=state.level<10?'ОБУЧЕНИЕ · НОВАЯ МЕХАНИКА':'АРКАДНОЕ ИСПЫТАНИЕ · НОВАЯ ЭКСПЕДИЦИЯ';$('#introTitle').textContent=title;$('#introText').textContent=text;$('#introLevel').textContent=String(state.level+1).padStart(2,'0');$('#introProgress').style.animation='none';void $('#introProgress').offsetWidth;$('#introProgress').style.animation='introLoad 4.5s linear forwards';$('#levelIntro').hidden=false;}
+function beginLevelPlay(){if(!state||!state.introActive)return;state.introActive=false;state.introRemaining=0;$('#levelIntro').hidden=true;lastFrame=performance.now();}
+function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
+function setMoveDir(dir){if(!state||state.paused||state.over||currentScreen!=='game')return;state.moveDir=dir;}
+function stopMove(){if(state)state.moveDir=0;}
+function switchLane(lane){if(!state||state.paused||state.over||lane===state.activeLane)return;if(LEVELS[state.level].lanes===1&&lane===0){showToast('Дальний рельс откроется на следующем уровне');return;}state.activeLane=lane;state.laneFrom=state.laneVisual;state.laneTo=lane;state.laneT=0;beep(lane===0?620:480,.055,'triangle');updateLaneButtons();}
+function updateLaneButtons(){$('#laneRear').classList.toggle('active',state&&state.activeLane===0);$('#laneFront').classList.toggle('active',state&&state.activeLane===1);$('#laneRear').disabled=!!(state&&LEVELS[state.level].lanes===1);}
+function spawnGem(laneOverride=null){const l=LEVELS[state.level];let lane=laneOverride===null?(l.lanes===1?1:Math.random()<.5?0:1):laneOverride;let kind;
+ if(l.objective.type==='color'&&Math.random()<.48){kind=GEM_TYPES.find(g=>g.id===l.objective.color)||GEM_TYPES[2];}
+ else if(Math.random()<(l.hazardChance??(state.level>=6?.085:0)))kind=GEM_TYPES[7];
+ else if(state.level>=9&&Math.random()<.07)kind=GEM_TYPES[6];
+ else {const pool=GEM_TYPES.slice(0,l.kinds);kind=pool[Math.floor(Math.random()*pool.length)];}
+ const r=kind.hazard?21:17+Math.random()*4;
+ const spread=state.level<2?430:650;
+ const x=clamp(state.cartX+(Math.random()-.5)*spread,70,W-70);
+ const laneGlow=LANE_GLOW[lane];
+ gems.push({x,y:86-Math.random()*34,lane,type:kind,laneGlow,r,mass:Math.max(.8,kind.weight||1),vx:(Math.random()-.5)*72,vy:l.fall*(.42+Math.random()*.10),gravity:560,rot:Math.random()*6.28,spin:(Math.random()-.5)*2.4,life:4.2,bounced:false,grounded:false,countedMiss:false,alive:true});
+}
+function spawnStalagmite(){const l=LEVELS[state.level];if(!l.spikeInterval)return;const lane=l.lanes===1?1:(Math.random()<.5?0:1);const x=clamp(state.cartX+(Math.random()-.5)*440,70,W-70);state.stalagmites.push({x,y:-76,lane,w:34+Math.random()*12,h:58+Math.random()*20,vy:0,gravity:1180,warning:.88,rot:(Math.random()-.5)*.08,spin:(Math.random()-.5)*.18,landed:false,fade:0});}
+function updateStalagmites(dt){const l=LEVELS[state.level];if(l.spikeInterval){state.spikeTimer-=dt;if(state.spikeTimer<=0){spawnStalagmite();state.spikeTimer=l.spikeInterval*(.78+Math.random()*.42);}}state.invuln=Math.max(0,state.invuln-dt);
+ for(let i=state.stalagmites.length-1;i>=0;i--){const s=state.stalagmites[i];if(s.warning>0){s.warning=Math.max(0,s.warning-dt);continue;}if(s.landed){s.fade+=dt;if(s.fade>.34)state.stalagmites.splice(i,1);continue;}s.vy+=s.gravity*dt;s.y+=s.vy*dt;s.rot+=s.spin*dt;const m=cartMetrics(s.lane),laneReady=state.activeLane===s.lane&&state.laneT>.94&&Math.abs(state.laneVisual-s.lane)<.12;const hitX=Math.abs(s.x-state.cartX)<m.outer+s.w*.34;const hitY=s.y+s.h>=m.top+4&&s.y<m.floor;
+  if(state.invuln<=0&&laneReady&&hitX&&hitY){state.lives=Math.max(0,state.lives-1);state.invuln=1.25;state.shake=settings.shake?.58:0;state.cartVX+=(state.cartX<s.x?-1:1)*95;burst(s.x,m.top,'#ff5367',24);beep(95,.24,'sawtooth');showToast(state.lives?`Удар сталактита! Осталось жизней: ${state.lives}`:'Последняя жизнь потеряна!');state.stalagmites.splice(i,1);updateHUD();if(state.lives<=0){state.deathReason='stalactites';endLevel(false);return false;}continue;}
+  if(s.y+s.h>=m.floor){s.y=m.floor-s.h;s.vy=0;s.landed=true;s.fade=0;burst(s.x,m.floor,'#ff6b67',9);}
+ }
+ return true;}
+function drawStalagmite(s){const m=cartMetrics(s.lane);if(s.warning>0){const pulse=.5+.5*Math.sin(performance.now()*.018);ctx.save();ctx.globalAlpha=.25+.45*pulse;ctx.strokeStyle='#ff5367';ctx.fillStyle='rgba(255,65,82,.14)';ctx.shadowColor='#ff425b';ctx.shadowBlur=18;ctx.lineWidth=2;ctx.setLineDash([7,8]);ctx.beginPath();ctx.moveTo(s.x,22);ctx.lineTo(s.x,m.floor-8);ctx.stroke();ctx.setLineDash([]);ctx.beginPath();ctx.ellipse(s.x,m.floor-5,24+8*pulse,6+2*pulse,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle='#ffe4e7';ctx.font='900 17px system-ui';ctx.textAlign='center';ctx.fillText('!',s.x,Math.max(70,m.top-18));ctx.restore();return;}
+ ctx.save();ctx.translate(s.x,s.y+s.h/2);ctx.rotate(s.rot);const w=s.w,h=s.h;const pts=[[-w*.48,-h*.48],[-w*.23,-h*.4],[-w*.1,-h*.5],[w*.2,-h*.42],[w*.46,-h*.5],[w*.32,-h*.12],[w*.12,h*.16],[0,h*.5],[-w*.16,h*.13],[-w*.34,-h*.08]];ctx.globalAlpha=s.landed?Math.max(0,1-s.fade/.34):1;ctx.shadowColor='#ff6471';ctx.shadowBlur=14;const gr=ctx.createLinearGradient(-w/2,-h/2,w/2,h/2);gr.addColorStop(0,'#c4d3db');gr.addColorStop(.35,'#60798c');gr.addColorStop(1,'#1b2a3b');polygon(pts,gr,'rgba(225,244,255,.72)',1.4);ctx.shadowBlur=0;polygon([[-w*.18,-h*.34],[0,h*.42],[w*.12,-h*.25]],'rgba(255,255,255,.17)');ctx.restore();}
+function cartMetrics(lane){const scale=lane===0 ? .84 : 1;const rail=RAIL_Y[lane];return {scale,top:rail-4-103*scale,inner:66*scale,outer:86*scale,floor:rail-8};}
+function registerMiss(g){if(g.countedMiss)return;g.countedMiss=true;state.missed++;state.combo=0;}
+function collideGemPair(a,b){if(a.lane!==b.lane)return;const dx=b.x-a.x,dy=b.y-a.y;const min=a.r+b.r;const d2=dx*dx+dy*dy;if(d2>=min*min||d2<.001)return;const d=Math.sqrt(d2),nx=dx/d,ny=dy/d,overlap=min-d;const invA=1/a.mass,invB=1/b.mass,total=invA+invB;
+ a.x-=nx*overlap*(invA/total);a.y-=ny*overlap*(invA/total);b.x+=nx*overlap*(invB/total);b.y+=ny*overlap*(invB/total);
+ const rvx=b.vx-a.vx,rvy=b.vy-a.vy,along=rvx*nx+rvy*ny;if(along<0){const impulse=-(1+.58)*along/total;a.vx-=impulse*invA*nx;a.vy-=impulse*invA*ny;b.vx+=impulse*invB*nx;b.vy+=impulse*invB*ny;a.spin-=ny*.7;b.spin+=nx*.7;}
+}
+function updateGemPhysics(dt){
+ // Скорость, гравитация, вращение и боковые границы сцены.
+ for(let i=gems.length-1;i>=0;i--){const g=gems[i];
+  if(!g.resting){g.vy+=g.gravity*dt;g.x+=g.vx*dt;g.y+=g.vy*dt;g.rot+=g.spin*dt;}
+  else {g.x+=g.vx*dt;g.rot+=g.spin*dt;g.vx*=Math.pow(.18,dt);g.spin*=Math.pow(.3,dt);g.life-=dt;}
+  if(g.x-g.r<24){g.x=24+g.r;g.vx=Math.abs(g.vx)*.52;g.spin+=.5;}
+  if(g.x+g.r>W-24){g.x=W-24-g.r;g.vx=-Math.abs(g.vx)*.52;g.spin-=.5;}
+  if(settings.particles&&!g.resting&&Math.random()<.34)particles.push({x:g.x+(Math.random()-.5)*6,y:g.y+g.r*.5,vx:(Math.random()-.5)*16,vy:16+Math.random()*32,life:.2+Math.random()*.2,max:.4,color:g.laneGlow,size:1+Math.random()*2});
+ }
+ // Столкновения камень-камень действуют только в пределах одной дорожки.
+ for(let i=0;i<gems.length;i++)for(let j=i+1;j<gems.length;j++)collideGemPair(gems[i],gems[j]);
+ // Контакт с кузовом и рельсами. В кузов попадают только камни, вошедшие в его проём сверху.
+ for(let i=gems.length-1;i>=0;i--){const g=gems[i];const m=cartMetrics(g.lane);const laneReady=state.activeLane===g.lane&&state.laneT>=.98&&Math.abs(state.laneVisual-g.lane)<.08;const dx=g.x-state.cartX;
+  if(!g.resting&&!g.grounded&&laneReady&&g.y+g.r>=m.top&&g.y-g.r<m.top+13){
+   if(Math.abs(dx)<=m.inner-g.r*.92){catchGem(g);gems.splice(i,1);continue;}
+   // Удар о бок/обод кузова отбрасывает кристалл наружу вместо автоматической поимки.
+   if(Math.abs(dx)<=m.outer+g.r){const side=dx<0?-1:1;g.x=state.cartX+side*(m.outer+g.r+1);g.vx=side*(Math.abs(g.vx)*.55+105);g.vy=-Math.abs(g.vy)*.30;g.spin+=side*1.8;g.bounced=true;burst(g.x,m.top,g.laneGlow,3);}
+  }
+  if(!g.grounded&&g.y+g.r>=m.floor){g.y=m.floor-g.r;g.grounded=true;g.resting=true;g.shattered=true;registerMiss(g);burst(g.x,m.floor,g.laneGlow||'#cfe9ff',8);g.vy=0;g.vx*=.18;g.spin*=.12;g.life=.42;continue;}
+  if(g.resting&&g.life<=0){gems.splice(i,1);continue;}
+  if(g.y>H+80||g.life<0){registerMiss(g);gems.splice(i,1);}
+ }
+}
+function catchGem(g){const t=g.type;if(t.hazard){const lost=Math.min(state.cargo.length,Math.max(1,Math.ceil(state.cargo.length*.35)));for(let i=0;i<lost;i++)spillOne(true);state.shake=settings.shake?.35:0;showToast('Взрывная порода! Часть груза потеряна');beep(110,.22,'sawtooth');burst(g.x,g.y,'#ff684f',22);return;}
+ const objective=LEVELS[state.level].objective;
+ state.caughtByType[t.id]=(state.caughtByType[t.id]||0)+1;
+ let bonus=0;if(state.level>=7){if(state.elapsed-state.lastCatch<3.5)state.combo++;else state.combo=1;state.lastCatch=state.elapsed;if(state.combo>=2)bonus=Math.min(50,(state.combo-1)*8);}
+ state.cargoValue+=t.value;state.score+=t.value+bonus;state.cargoMass+=t.weight;state.caught++;state.cargo.push({type:t,value:t.value,laneGlow:g.laneGlow||LANE_GLOW[g.lane],lane:g.lane,x:0,y:0,phase:Math.random()*6.28});
+ if(objective.type==='color'&&t.id!==objective.color){const penalty=objective.penalty||20;state.score=Math.max(0,state.score-penalty);state.penaltyPoints+=penalty;showToast(`Неверный цвет · штраф −${penalty} очков`);}
+ else {if(bonus)showToast(`Серия ×${state.combo} · бонус +${bonus}`);else if(objective.type==='color')showToast(`Верно! ${GEM_LABELS[t.id]||'Кристалл'} · ${state.caughtByType[t.id]}/${objective.target}`);}
+ burst(g.x,g.y,g.laneGlow||t.color,12);beep(420+Math.min(t.value,150)*2,.07,'sine');
+ while(state.cargoMass>state.capacity&&state.cargo.length){spillOne(false);state.shake=settings.shake?.28:0;}
+}
+function spillOne(fromHazard=false){if(!state.cargo.length)return;const item=state.cargo.pop();state.cargoMass=Math.max(0,state.cargoMass-item.type.weight);const lostValue=item.value??item.type.value;state.cargoValue=Math.max(0,state.cargoValue-lostValue);state.score=Math.max(0,state.score-lostValue);spills.push({type:item.type,laneGlow:item.laneGlow||LANE_GLOW[item.lane??state.activeLane],x:state.cartX+(Math.random()-.5)*70,y:RAIL_Y[state.activeLane]-52,vx:(Math.random()-.5)*180,vy:-130-Math.random()*80,rot:Math.random()*6,spin:(Math.random()-.5)*7,life:2.4});if(!fromHazard)showToast('Перегруз! Камень вывалился');}
+function unload(){if(!state||state.paused||state.over)return;if(state.unloadCooldown>0){showToast(`Разгрузка через ${Math.ceil(state.unloadCooldown)} сек.`);return;}if(!state.cargo.length){showToast('В вагонетке пока пусто');return;}const val=state.cargoValue;state.banked+=val;state.cargo=[];state.cargoValue=0;state.cargoMass=0;state.unloadCooldown=5;burst(state.cartX,RAIL_Y[state.activeLane]-55,'#ffe18a',32);beep(740,.16,'triangle');showToast(`Груз сдан: +${fmt(val)} ✦`);updateHUD();}
+function burst(x,y,color,count=12){if(!settings.particles)return;for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,s=35+Math.random()*180,life=.35+Math.random()*.7;particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-25,life,max:life,color,size:1.5+Math.random()*3});}}
+function initAmbient(){const cols=['#a9e7ff','#70caff','#d4f4ff','#ffd49a'];ambient=Array.from({length:118},()=>({x:Math.random()*W,y:Math.random()*H,vy:5+Math.random()*20,vx:(Math.random()-.5)*12,r:.6+Math.random()*1.8,a:.12+Math.random()*.34,color:cols[Math.floor(Math.random()*cols.length)],phase:Math.random()*6.28}));}
+function drawAmbientScene(){const t=performance.now()/1000;const haze=[{x:300+Math.sin(t*.19)*55,y:330+Math.cos(t*.22)*18,r:210,a:.075},{x:870+Math.cos(t*.16)*75,y:405+Math.sin(t*.2)*22,r:270,a:.065},{x:1120+Math.sin(t*.14)*48,y:570,r:190,a:.055}];for(const h of haze){const g=ctx.createRadialGradient(h.x,h.y,0,h.x,h.y,h.r);g.addColorStop(0,`rgba(73,171,239,${h.a})`);g.addColorStop(1,'rgba(73,171,239,0)');ctx.fillStyle=g;ctx.fillRect(h.x-h.r,h.y-h.r,h.r*2,h.r*2);}const crystals=[[120,110,45],[395,390,30],[300,640,38],[1130,170,42],[150,690,34],[1190,610,48]];for(let i=0;i<crystals.length;i++){const [x,y,r]=crystals[i],pulse=.55+.45*Math.sin(t*1.35+i*1.7),g=ctx.createRadialGradient(x,y,1,x,y,r*(1.2+pulse*.2));g.addColorStop(0,`rgba(75,190,255,${.16*pulse})`);g.addColorStop(1,'rgba(75,190,255,0)');ctx.fillStyle=g;ctx.fillRect(x-r*1.4,y-r*1.4,r*2.8,r*2.8);}}
+function updateHUD(){if(!state)return;const l=LEVELS[state.level],o=l.objective,prog=objectiveProgress();$('#hudLevel').textContent=String(state.level+1).padStart(2,'0');$('#hudLevelName').textContent=l.name;$('#hudScore').textContent=fmt(prog);$('#hudTarget').textContent=fmt(o.target);$('#hudTargetUnit').textContent=objectiveUnit();$('#hudProgress').style.width=Math.min(100,prog/o.target*100)+'%';$('#hudMass').textContent=state.cargoMass;$('#hudCapacity').textContent=state.capacity;$('#hudCargoValue').textContent=fmt(state.cargoValue)+' ✦ в вагонетке';$('#hudTime').textContent=Math.ceil(state.timeLeft);$('#hudLives').textContent='◆ '.repeat(state.lives).trim()||'—';$('#hudLives').style.opacity=state.lives/3;$('#hudLives').parentElement.style.display=l.spikeInterval?'':'none';$('#hudMissed').textContent=`Промахи: ${state.missed}`;$('#unloadBtn').disabled=state.unloadCooldown>0||!state.cargo.length;$('#unloadLabel').textContent=state.cargo.length?'РАЗГРУЗИТЬ':'ПУСТО';$('#unloadTimer').textContent=state.unloadCooldown>0?`ГОТОВО ЧЕРЕЗ ${Math.ceil(state.unloadCooldown)} СЕК.`:'СДАТЬ ДОБЫЧУ · 5 СЕК.';updateLaneButtons();}
+function endLevel(won){if(!state||state.over)return;state.over=true;state.levelWon=won;if(state.cargo.length){state.banked+=state.cargoValue;state.cargo=[];state.cargoValue=0;state.cargoMass=0;}if(won){if(!progress.cleared.includes(state.level))progress.cleared.push(state.level);progress.best[state.level]=Math.max(progress.best[state.level]||0,state.score);saveProgress();}else progress.best[state.level]=Math.max(progress.best[state.level]||0,state.score);saveProgress();cancelAnimationFrame(raf);resultModal(won);}
+function restartLevel(){const n=state?state.level:0;startGame(n);}
+function nextLevel(){const n=Math.min(LEVELS.length-1,state.level+1);startGame(n);}
+function exitToMenu(){if(state){state.moveDir=0;state.cartVX=0;}cancelAnimationFrame(raf);closeModal();$('#levelIntro').hidden=true;showScreen('menu');if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(()=>{});}
+
+function loop(now){if(!state||state.over||state.paused)return;const dt=Math.min(.034,(now-lastFrame)/1000||.016);lastFrame=now;if(state.introActive){state.introRemaining-=dt;if(state.introRemaining<=0)beginLevelPlay();render();raf=requestAnimationFrame(loop);return;}update(dt);render();raf=requestAnimationFrame(loop);}
+function update(dt){const l=LEVELS[state.level];state.elapsed+=dt;state.timeLeft=Math.max(0,l.time-state.elapsed);state.unloadCooldown=Math.max(0,state.unloadCooldown-dt);
+ // Ручное управление по горизонтали с ускорением и инерцией.
+ if(state.moveDir){state.cartVX=clamp(state.cartVX+state.moveDir*state.cartAccel*dt,-state.cartSpeed,state.cartSpeed);}else{const f=state.cartFriction*dt;state.cartVX=Math.abs(state.cartVX)<=f?0:state.cartVX-Math.sign(state.cartVX)*f;}
+ state.cartX+=state.cartVX*dt;if(state.cartX<state.cartMin){state.cartX=state.cartMin;state.cartVX=0;}if(state.cartX>state.cartMax){state.cartX=state.cartMax;state.cartVX=0;}
+ if(state.laneT<1){state.laneT=Math.min(1,state.laneT+dt/.22);const t=state.laneT;const e=t*t*(3-2*t);state.laneVisual=state.laneFrom+(state.laneTo-state.laneFrom)*e;}
+ if(!updateStalagmites(dt))return;
+ state.spawnTimer-=dt;if(state.spawnTimer<=0){spawnGem();if(Math.random()<(l.doubleChance||0))spawnGem();state.spawnTimer=l.interval*.76*(.82+Math.random()*.36);}
+ updateGemPhysics(dt);
+ for(let i=spills.length-1;i>=0;i--){const s=spills[i];s.vy+=460*dt;s.x+=s.vx*dt;s.y+=s.vy*dt;s.rot+=s.spin*dt;s.life-=dt;const floor=RAIL_Y[state.activeLane]-8;if(s.y>floor){s.y=floor;s.vy*=-.28;s.vx*=.72;}if(s.life<=0)spills.splice(i,1);}
+ for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=45*dt;p.vx*=.99;p.life-=dt;if(p.life<=0)particles.splice(i,1);}
+ for(const p of ambient){p.x+=p.vx*dt;p.y+=p.vy*dt;if(p.y>H){p.y=-5;p.x=Math.random()*W;}if(p.x<0)p.x=W;if(p.x>W)p.x=0;}
+ if(state.shake>0)state.shake=Math.max(0,state.shake-dt);if(objectiveComplete()){endLevel(true);return;}if(state.timeLeft<=0){endLevel(objectiveComplete());return;}updateHUD();}
+
+function drawCover(img){if(!img.complete||!img.naturalWidth){ctx.fillStyle='#07182b';ctx.fillRect(0,0,W,H);return;}const scale=Math.max(W/img.width,H/img.height),w=img.width*scale,h=img.height*scale;ctx.drawImage(img,(W-w)/2,(H-h)/2,w,h);}
+function polygon(points,fill,stroke=null,lw=1){ctx.beginPath();ctx.moveTo(points[0][0],points[0][1]);for(let i=1;i<points.length;i++)ctx.lineTo(points[i][0],points[i][1]);ctx.closePath();if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke();}}
+function drawGem(x,y,r,type,rot=0,alpha=1,laneGlow=null){
+ ctx.save();ctx.globalAlpha=alpha;ctx.translate(x,y);ctx.rotate(rot);
+ if(laneGlow){ctx.save();ctx.globalAlpha=alpha*.22;ctx.fillStyle=laneGlow;ctx.shadowColor=laneGlow;ctx.shadowBlur=24;ctx.beginPath();ctx.arc(0,0,r*1.45,0,Math.PI*2);ctx.fill();ctx.restore();}
+ const sprite = type && type.sprite ? gemSprites[type.sprite] : null;
+ if(sprite && sprite.complete && sprite.naturalWidth){
+  const scale = type.hazard ? 2.55 : 2.35;
+  const w = r * scale * (sprite.naturalWidth / Math.max(1, sprite.naturalHeight));
+  const h = r * scale;
+  ctx.save();
+  if(laneGlow){ctx.shadowColor=laneGlow;ctx.shadowBlur=type.hazard?10:16;}
+  ctx.drawImage(sprite, -w/2, -h/2, w, h);
+  ctx.restore();
+  if(laneGlow){ctx.globalAlpha=alpha*.5;ctx.strokeStyle=laneGlow;ctx.lineWidth=1.35;ctx.beginPath();ctx.arc(0,0,r*1.12,0,Math.PI*2);ctx.stroke();}
+  ctx.restore();
+  return;
+ }
+ const sides=type.sides||6;const pts=[];for(let i=0;i<sides;i++){const a=-Math.PI/2+i*Math.PI*2/sides;pts.push([Math.cos(a)*r,Math.sin(a)*r*1.12]);}
+ ctx.shadowColor=laneGlow||type.color;ctx.shadowBlur=type.hazard?5:laneGlow?21:16;const grad=ctx.createLinearGradient(-r,-r,r,r);grad.addColorStop(0,type.color);grad.addColorStop(.52,type.dark);grad.addColorStop(1,type.color);polygon(pts,grad,'rgba(235,250,255,.72)',1.2);ctx.shadowBlur=0;for(let i=0;i<sides;i++){const a=pts[i],b=pts[(i+1)%sides];polygon([[0,0],a,b],i%2===0?'rgba(255,255,255,.25)':'rgba(0,12,35,.17)');}polygon([[-r*.2,-r*.65],[0,-r*.83],[r*.3,-r*.45],[0,-r*.2]],'rgba(255,255,255,.5)');if(laneGlow){ctx.globalAlpha=alpha*.62;ctx.strokeStyle=laneGlow;ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(0,0,r*1.16,0,Math.PI*2);ctx.stroke();}if(type.hazard){ctx.globalAlpha=alpha;ctx.strokeStyle='#ff715c';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-r*.25,-r*.3);ctx.lineTo(r*.08,r*.05);ctx.lineTo(-r*.05,r*.48);ctx.stroke();}ctx.restore();
+}
+function drawCart(){
+ const lane=state.laneVisual,rail=RAIL_Y[0]+(RAIL_Y[1]-RAIL_Y[0])*lane,scale=.84+.16*lane,x=state.cartX,y=rail-4;
+ ctx.save();ctx.translate(x,y);ctx.rotate(clamp(state.cartVX/5200,-.075,.075));ctx.scale(scale,scale);
+ if(state.shake>0)ctx.translate((Math.random()-.5)*state.shake*20,(Math.random()-.5)*state.shake*12);
+ // Ground shadow and cool underglow.
+ ctx.fillStyle='rgba(0,0,0,.48)';ctx.beginPath();ctx.ellipse(0,2,104,18,0,0,Math.PI*2);ctx.fill();
+ const under=ctx.createRadialGradient(0,-12,8,0,-12,95);under.addColorStop(0,'rgba(69,190,255,.16)');under.addColorStop(1,'rgba(69,190,255,0)');ctx.fillStyle=under;ctx.fillRect(-110,-35,220,55);
+ // Axles, leaf springs and suspension brackets.
+ for(const wx of [-57,57]){ctx.fillStyle='#172c3b';roundRect(wx-14,-29,28,13,4);ctx.fill();ctx.strokeStyle='#91aebe';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(wx-10,-25);ctx.quadraticCurveTo(wx,-18,wx+10,-25);ctx.stroke();}
+ const chassis=ctx.createLinearGradient(0,-36,0,-7);chassis.addColorStop(0,'#d0e2e9');chassis.addColorStop(.22,'#647f91');chassis.addColorStop(.58,'#263d50');chassis.addColorStop(1,'#101e2d');
+ polygon([[-91,-37],[-78,-47],[78,-47],[91,-37],[84,-15],[-84,-15]],chassis,'#d5e9f2',2.2);
+ polygon([[-83,-30],[83,-30],[76,-19],[-76,-19]],'#263b4b','#7897a8',1.2);
+ // Wheels with animated spokes and brass hubs.
+ for(const wx of [-59,59]){
+  ctx.save();ctx.translate(wx,-9);ctx.rotate(state.elapsed*2.8*(state.cartVX<0?-1:1));
+  ctx.fillStyle='#0a1521';ctx.beginPath();ctx.arc(0,0,19,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='#8ea8b7';ctx.lineWidth=4;ctx.stroke();ctx.strokeStyle='#344f62';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,13,0,Math.PI*2);ctx.stroke();
+  for(let k=0;k<8;k++){const a=k*Math.PI/4;ctx.strokeStyle='#a9c0cc';ctx.lineWidth=2.2;ctx.beginPath();ctx.moveTo(Math.cos(a)*4,Math.sin(a)*4);ctx.lineTo(Math.cos(a)*12,Math.sin(a)*12);ctx.stroke();}
+  const hub=ctx.createRadialGradient(-3,-3,1,0,0,6);hub.addColorStop(0,'#fff0b1');hub.addColorStop(.5,'#c98c3d');hub.addColorStop(1,'#4c2b18');ctx.fillStyle=hub;ctx.beginPath();ctx.arc(0,0,6,0,Math.PI*2);ctx.fill();ctx.restore();
+ }
+ // Tub exterior: heavy timber body with steel end plates.
+ const wood=ctx.createLinearGradient(0,-103,0,-24);wood.addColorStop(0,'#f0c47a');wood.addColorStop(.18,'#b8793d');wood.addColorStop(.55,'#80502d');wood.addColorStop(1,'#392a29');
+ polygon([[-82,-91],[-72,-101],[72,-101],[82,-91],[69,-28],[-69,-28]],wood,'#f1ca83',2.5);
+ // Individual timber boards with grain highlights.
+ for(let i=-5;i<=5;i++){
+  const bx=i*13;ctx.strokeStyle=i%2===0?'rgba(255,220,155,.48)':'rgba(45,24,18,.3)';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(bx,-94);ctx.lineTo(bx*.84,-32);ctx.stroke();
+  ctx.strokeStyle='rgba(255,239,197,.14)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(bx+3,-88);ctx.lineTo(bx*.84+3,-39);ctx.stroke();
+ }
+ // Interior well and dark metal lining.
+ polygon([[-69,-88],[69,-88],[59,-39],[-59,-39]],'rgba(5,17,28,.94)','#e5c184',2);
+ ctx.save();ctx.beginPath();ctx.moveTo(-65,-86);ctx.lineTo(65,-86);ctx.lineTo(56,-40);ctx.lineTo(-56,-40);ctx.closePath();ctx.clip();
+ state.cargo.forEach((item,i)=>{const col=i%6,row=Math.floor(i/6);const gx=-47+col*18+(row%2)*7,gy=-51-row*14+Math.sin(state.elapsed*4+item.phase)*1.5;drawGem(gx,gy,9.5,item.type,Math.sin(state.elapsed*2+item.phase)*.08,.98,item.laneGlow||null);});ctx.restore();
+ // Reinforced corner brackets, rivets and thick rim.
+ for(const sx of [-76,76]){polygon([[sx-7,-97],[sx+7,-97],[sx*.84,-31],[sx*.68,-28]],'#30495b','#c5d9e2',1.4);for(const sy of [-88,-68,-45]){ctx.fillStyle='#f4d99a';ctx.beginPath();ctx.arc(sx*.91,sy,2.7,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#694521';ctx.lineWidth=1;ctx.stroke();}}
+ const rim=ctx.createLinearGradient(0,-105,0,-91);rim.addColorStop(0,'#fff0b6');rim.addColorStop(.4,'#d59a4c');rim.addColorStop(1,'#68401f');polygon([[-85,-103],[-73,-109],[73,-109],[85,-103],[80,-94],[-80,-94]],rim,'#ffe7a8',1.5);
+ // Front bumper and side-mounted lanterns.
+ const bumper=ctx.createLinearGradient(0,-37,0,-24);bumper.addColorStop(0,'#c5dce5');bumper.addColorStop(.45,'#516c7f');bumper.addColorStop(1,'#172b3c');polygon([[-92,-37],[92,-37],[84,-25],[-84,-25]],bumper,'#9bb8c8',1.5);
+ for(const sx of [-88,88]){ctx.save();ctx.translate(sx,-66);ctx.shadowColor='#ffc95f';ctx.shadowBlur=17;const lamp=ctx.createRadialGradient(-2,-3,1,0,0,11);lamp.addColorStop(0,'#fff7c8');lamp.addColorStop(.38,'#ffd36a');lamp.addColorStop(1,'#a95b19');ctx.fillStyle=lamp;ctx.beginPath();ctx.arc(0,0,8,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#e5c17e';ctx.lineWidth=2;ctx.stroke();ctx.restore();}
+ // Small maker plate and animated cargo capacity indicator.
+ polygon([[-22,-22],[22,-22],[18,-16],[-18,-16]],'#233e52','#8fb0c2',1);ctx.fillStyle='#bfeeff';ctx.font='900 7px system-ui';ctx.textAlign='center';ctx.fillText('CM · 04',0,-17);
+ ctx.restore();
+}
+function render(){ctx.save();let shake=state.shake>0?state.shake*7:0;if(shake)ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);drawCover(gameBg);if(settings.particles)drawAmbientScene();
+ // Цветовые зоны рельсов: дальний — красный, ближний — синий.
+ for(let i=0;i<2;i++){const y=RAIL_Y[i]-42;const glow=LANE_GLOW[i];const grad=ctx.createLinearGradient(0,y,0,y+24);grad.addColorStop(0,'rgba(70,190,255,0)');grad.addColorStop(.5,i===state.activeLane?(i===0?'rgba(255,75,100,.16)':'rgba(84,190,255,.16)'):'rgba(84,140,190,.025)');grad.addColorStop(1,'rgba(70,190,255,0)');ctx.fillStyle=grad;ctx.fillRect(0,y-12,W,34);ctx.save();ctx.globalAlpha=.78;ctx.fillStyle=glow;ctx.shadowColor=glow;ctx.shadowBlur=10;ctx.font='900 11px system-ui';ctx.textAlign='left';ctx.fillText(i===0?'ДАЛЬНИЙ · КРАСНЫЙ':'БЛИЖНИЙ · СИНИЙ',34,RAIL_Y[i]-48);ctx.restore();}
+ // ambient dust
+ if(settings.particles){for(const p of ambient){ctx.globalAlpha=p.a*(.68+.32*Math.sin(performance.now()*.0015+p.phase));ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=5;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();}}ctx.globalAlpha=1;ctx.shadowBlur=0;
+ // Физические самоцветы: короткий цветной шлейф и свечение по дорожке.
+ for(const g of gems){ctx.save();ctx.globalAlpha=g.shattered ? Math.min(.08, g.life*.14) : (g.resting ? .12 : .25);ctx.strokeStyle=g.laneGlow;ctx.lineWidth=2.2;ctx.beginPath();ctx.moveTo(g.x-g.vx*.035,g.y-g.vy*.035);ctx.lineTo(g.x-g.vx*.13,g.y-g.vy*.13-10);ctx.stroke();ctx.restore();drawGem(g.x,g.y,g.r,g.type,g.rot,g.resting?Math.min(1,g.life/(g.shattered?.42:1.45)):1,g.laneGlow);}
+ // Каменные пики: предупреждение, падение и столкновение с вагонеткой.
+ for(const s of state.stalagmites)drawStalagmite(s);
+ // spills
+ for(const s of spills)drawGem(s.x,s.y,13,s.type,s.rot,Math.max(0,s.life/2.4),s.laneGlow||null);
+ if(state.invuln>0&&Math.floor(performance.now()/90)%2===0){ctx.save();ctx.globalAlpha=.16;ctx.fillStyle='#ff6474';ctx.fillRect(state.cartX-78,RAIL_Y[state.activeLane]-92,156,92);ctx.restore();}
+ drawCart();
+ // particle layer
+ for(const p of particles){ctx.globalAlpha=Math.max(0,p.life/p.max);ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=8;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();}ctx.globalAlpha=1;ctx.shadowBlur=0;
+ // cargo load bar over cart
+ const barX=state.cartX-48,barY=RAIL_Y[0]+(RAIL_Y[1]-RAIL_Y[0])*state.laneVisual-98;ctx.fillStyle='rgba(3,12,23,.7)';roundRect(barX,barY,96,7,4);ctx.fill();ctx.fillStyle=state.cargoMass>8?'#ff7768':'#8df1d2';roundRect(barX,barY,96*Math.min(1,state.cargoMass/state.capacity),7,4);ctx.fill();
+ ctx.restore();}
+function roundRect(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);}
+
+// delegated UI actions
+$('#app').addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b)return;const a=b.dataset.action;switch(a){
+ case'play':{const n=LEVELS.findIndex((_,i)=>!progress.cleared.includes(i));startGame(n<0?0:n);break;}
+ case'levels':levelsModal();break;case'rules':rulesModal();break;case'about':aboutModal();break;case'settings':settingsModal();break;case'close-modal':closeModal();break;
+ case'start-level':startGame(Number(b.dataset.level));break;case'pause':pauseModal();break;case'resume':closeModal();if(state){state.paused=false;lastFrame=performance.now();raf=requestAnimationFrame(loop);}break;
+ case'restart':restartLevel();break;case'next-level':nextLevel();break;case'exit':exitToMenu();break;case'unload':unload();break;case'lane-rear':switchLane(0);break;case'lane-front':switchLane(1);break;
+ case'start-level-now':beginLevelPlay();break;
+ case'toggle-sound':settings.sound=!settings.sound;saveSettings();settingsModal();break;case'toggle-particles':settings.particles=!settings.particles;saveSettings();settingsModal();break;case'toggle-shake':settings.shake=!settings.shake;saveSettings();settingsModal();break;
+ }});
+$('#modalLayer').addEventListener('click',e=>{if(e.target===$('#modalLayer'))closeModal();});
+window.addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault();if(currentScreen==='game'&&!$('#modalLayer').classList.contains('show')){if(k==='a'||k==='arrowleft'){setMoveDir(-1);return;}if(k==='d'||k==='arrowright'){setMoveDir(1);return;}}if(e.repeat)return;if(k==='w'||k==='arrowup')switchLane(0);else if(k==='s'||k==='arrowdown')switchLane(1);else if(k==='e'||k===' ')unload();else if(k==='p'||k==='escape'){if($('#modalLayer').classList.contains('show')){if(state&&state.paused){closeModal();state.paused=false;lastFrame=performance.now();raf=requestAnimationFrame(loop);}else closeModal();}else if(currentScreen==='game')pauseModal();}});
+window.addEventListener('keyup',e=>{const k=e.key.toLowerCase();if((k==='a'||k==='arrowleft')&&state&&state.moveDir===-1)stopMove();if((k==='d'||k==='arrowright')&&state&&state.moveDir===1)stopMove();});
+window.addEventListener('blur',()=>stopMove());
+// Сенсорные кнопки работают как удержание: вагонетка едет, пока палец на кнопке.
+$$('[data-move]').forEach(btn=>{const dir=Number(btn.dataset.move);btn.addEventListener('pointerdown',e=>{e.preventDefault();btn.classList.add('pressed');try{btn.setPointerCapture(e.pointerId);}catch(_){}setMoveDir(dir);});const release=e=>{if(e)e.preventDefault();btn.classList.remove('pressed');if(state&&state.moveDir===dir)stopMove();};btn.addEventListener('pointerup',release);btn.addEventListener('pointercancel',release);btn.addEventListener('lostpointercapture',release);});
+// Touch targets use CSS touch-action: manipulation; delegated click handlers work for mouse and touch.
+window.addEventListener('resize',()=>{if(canvas){const dpr=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(canvas.clientWidth*dpr);canvas.height=Math.round(canvas.clientHeight*dpr);ctx.setTransform(canvas.width/W,0,0,canvas.height/H,0,0);}});
+function initCanvas(){const dpr=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(canvas.clientWidth*dpr);canvas.height=Math.round(canvas.clientHeight*dpr);ctx.setTransform(canvas.width/W,0,0,canvas.height/H,0,0);}
+initCanvas();initAmbient();
+// lightweight preview animation behind menu remains in CSS; canvas starts only when a level starts
+})();
+</script>
+</body>
+</html>
