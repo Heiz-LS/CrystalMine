@@ -167,6 +167,33 @@ html,body{height:100vh;height:var(--viewport-height,100dvh);min-height:0}
  .move-btn{touch-action:none}
 }
 
+
+/* v0.4.2 — mobile control micropatch */
+@media (max-width: 900px) and (orientation: landscape) and (pointer: coarse) {
+ .game-bottom{display:grid;grid-template-columns:minmax(54px,1fr) minmax(94px,auto) minmax(54px,1fr);align-items:end;column-gap:clamp(5px,1.4vw,16px);left:calc(env(safe-area-inset-left,0px) + 9px);right:calc(env(safe-area-inset-right,0px) + 9px);bottom:calc(env(safe-area-inset-bottom,0px) + 8px)}
+ .move-controls{display:contents}
+ .move-btn{width:clamp(54px,9.5vw,76px);min-width:54px;min-height:clamp(54px,13vh,68px);padding:5px;border-radius:17px;align-self:end;touch-action:none;user-select:none;-webkit-user-select:none}
+ .move-btn[data-move="-1"]{grid-column:1;grid-row:1;justify-self:start}
+ .move-btn[data-move="1"]{grid-column:3;grid-row:1;justify-self:end}
+ .move-btn b{font-size:clamp(25px,4.6vw,33px);line-height:1}
+ .move-btn span,.lane-btn span{display:none}
+ .lane-controls{position:absolute;left:0;bottom:calc(clamp(54px,13vh,68px) + 10px);display:flex;flex-direction:column;gap:6px;width:auto;align-items:flex-start}
+ .lane-btn{width:clamp(46px,7vw,55px);min-width:46px;min-height:43px;padding:4px;justify-content:center;border-radius:13px}
+ .lane-btn b{font-size:23px;width:auto;height:auto;line-height:1}
+ .unload-btn{grid-column:2;grid-row:1;justify-self:center;align-self:end;min-width:100px;width:clamp(100px,23vw,142px);min-height:53px;padding:7px 8px}
+ .unload-btn small{display:none}
+ .unload-btn #unloadLabel{font-size:10px;line-height:1.2}
+}
+@media (max-width:900px) and (max-height:360px) and (orientation:landscape) and (pointer:coarse){
+ .lane-controls{bottom:61px;gap:4px}.lane-btn{min-height:36px}.move-btn{min-height:51px}.unload-btn{min-height:49px}
+}
+
+
+/* 0.4.3: мобильный свайп по игровому полю для смены рельса */
+@media (pointer: coarse) {
+  #gameCanvas { touch-action: none; }
+  .lane-controls { display: none !important; }
+}
 </style>
 </head>
 <body>
@@ -537,6 +564,24 @@ window.addEventListener('keyup',e=>{const k=e.key.toLowerCase();if((k==='a'||k==
 window.addEventListener('blur',()=>stopMove());
 // Сенсорные кнопки работают как удержание: вагонетка едет, пока палец на кнопке.
 $$('[data-move]').forEach(btn=>{const dir=Number(btn.dataset.move);btn.addEventListener('pointerdown',e=>{e.preventDefault();btn.classList.add('pressed');try{btn.setPointerCapture(e.pointerId);}catch(_){}setMoveDir(dir);});const release=e=>{if(e)e.preventDefault();btn.classList.remove('pressed');if(state&&state.moveDir===dir)stopMove();};btn.addEventListener('pointerup',release);btn.addEventListener('pointercancel',release);btn.addEventListener('lostpointercapture',release);});
+// Свайп вверх/вниз по свободной области игрового поля переключает рельс.
+// Начало жеста на кнопках не перехватывается; горизонтальные жесты игнорируются.
+const swipeArea = $('#gameCanvas');
+let laneSwipeStart = null;
+swipeArea.addEventListener('pointerdown', e => {
+ if(e.pointerType === 'mouse' || currentScreen !== 'game' || !state || state.paused || state.over || state.introActive || $('#modalLayer').classList.contains('show'))return;
+ laneSwipeStart = {id:e.pointerId,x:e.clientX,y:e.clientY};
+ try{swipeArea.setPointerCapture(e.pointerId);}catch(_){}
+});
+swipeArea.addEventListener('pointerup', e => {
+ if(!laneSwipeStart || e.pointerId !== laneSwipeStart.id)return;
+ const dx=e.clientX-laneSwipeStart.x, dy=e.clientY-laneSwipeStart.y;
+ laneSwipeStart=null;
+ if(currentScreen !== 'game' || !state || state.paused || state.over || state.introActive || $('#modalLayer').classList.contains('show'))return;
+ if(Math.abs(dy)>=38 && Math.abs(dy)>Math.abs(dx)*1.25) switchLane(dy<0?0:1);
+});
+swipeArea.addEventListener('pointercancel',()=>{laneSwipeStart=null;});
+swipeArea.addEventListener('lostpointercapture',()=>{laneSwipeStart=null;});
 // Touch targets use CSS touch-action: manipulation; delegated click handlers work for mouse and touch.
 function syncViewport(){const vv=window.visualViewport;const h=vv&&vv.height?vv.height:window.innerHeight;const top=vv&&Number.isFinite(vv.offsetTop)?vv.offsetTop:0;document.documentElement.style.setProperty('--viewport-height',`${Math.max(240,h)}px`);document.documentElement.style.setProperty('--viewport-top',`${Math.max(0,top)}px`);if(canvas&&canvas.clientWidth>0&&canvas.clientHeight>0){const dpr=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(canvas.clientWidth*dpr);canvas.height=Math.round(canvas.clientHeight*dpr);ctx.setTransform(canvas.width/W,0,0,canvas.height/H,0,0);}}
 window.addEventListener('resize',syncViewport,{passive:true});
