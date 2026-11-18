@@ -1,0 +1,1108 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#071525">
+<title>Кристальная шахта — вагонетка сокровищ</title>
+<style>
+:root{--cyan:#61dcff;--blue:#4d9fff;--gold:#ffd36c;--panel:rgba(7,18,34,.82);--line:rgba(154,213,255,.22);--muted:#9eb6ce;--white:#f4f8ff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#06111f;color:var(--white);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;overscroll-behavior:none}
+button{font:inherit;color:inherit;border:0;cursor:pointer;touch-action:manipulation}
+#app{position:fixed;inset:0;overflow:hidden;background:#071525}
+.screen{position:absolute;inset:0;display:none;overflow:hidden}
+.screen.active{display:flex}
+#menuScreen{align-items:center;justify-content:center;background:linear-gradient(90deg,rgba(3,11,22,.8),rgba(4,15,29,.52) 45%,rgba(4,15,29,.2)),linear-gradient(0deg,rgba(3,10,20,.72),transparent 55%),url('assets/mine-menu-animated.gif') center/cover no-repeat}
+.menu-wrap{position:relative;z-index:1;width:min(1180px,94vw);height:min(680px,92vh);display:grid;grid-template-columns:minmax(300px,1fr) minmax(300px,420px);gap:clamp(20px,5vw,70px);align-items:center;padding:clamp(18px,4vw,52px)}
+.brand{align-self:center;max-width:640px;text-shadow:0 5px 24px #00101f}
+.brand-kicker{display:inline-flex;align-items:center;gap:9px;color:#a8e8ff;font-size:clamp(10px,1.2vw,14px);font-weight:800;letter-spacing:.22em;text-transform:uppercase;margin-bottom:14px}
+.brand-kicker:before{content:"";width:30px;height:2px;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+.brand h1{margin:0;font-size:clamp(38px,6vw,76px);line-height:.96;letter-spacing:-.055em;font-weight:950;text-transform:uppercase;background:linear-gradient(180deg,#fff8d9 5%,#9be9ff 48%,#4e9be9 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 5px 2px rgba(0,0,0,.35))}
+.brand h1 span{display:block;color:#fff;background:linear-gradient(180deg,#fff,#9ab9d9);-webkit-background-clip:text;background-clip:text}
+.brand p{max-width:520px;color:#c1d4e8;font-size:clamp(13px,1.5vw,17px);line-height:1.65;margin:22px 0 0}
+.menu-card{background:linear-gradient(145deg,rgba(12,31,53,.92),rgba(4,15,29,.88));border:1px solid rgba(141,213,255,.28);border-radius:26px;padding:clamp(18px,2.5vw,28px);box-shadow:0 24px 70px rgba(0,0,0,.45),inset 0 1px rgba(255,255,255,.08);backdrop-filter:blur(14px)}
+.menu-card h2{font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:#9fc6e7;margin:0 0 16px}
+.menu-buttons{display:grid;gap:10px}
+.btn{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:12px 18px;border-radius:14px;font-weight:850;letter-spacing:.04em;transition:transform .15s,filter .15s,background .15s;border:1px solid rgba(168,218,255,.22);background:linear-gradient(180deg,rgba(44,81,116,.85),rgba(18,42,67,.95));box-shadow:inset 0 1px rgba(255,255,255,.13),0 7px 18px rgba(0,0,0,.2)}
+.btn:hover{filter:brightness(1.15);transform:translateY(-2px)}.btn:active{transform:translateY(1px) scale(.99)}
+.btn.primary{color:#08182a;background:linear-gradient(180deg,#a9f0ff,#54b9f0 58%,#3686ce);border-color:#a5eaff;box-shadow:0 0 24px rgba(72,187,255,.24),inset 0 1px #fff}
+.btn.gold{color:#2a1b05;background:linear-gradient(180deg,#fff0b0,#ffca56 60%,#d88b25);border-color:#ffe7a0}
+.btn.ghost{background:rgba(11,29,48,.65)}.btn.small{min-height:38px;padding:8px 13px;font-size:12px;border-radius:11px}
+.btn .ico{font-size:19px;line-height:1}
+.menu-foot{display:flex;justify-content:space-between;align-items:center;margin-top:18px;color:#7f9bb6;font-size:11px;letter-spacing:.08em}
+
+#menuScreen::before,#menuScreen::after{content:"";position:absolute;inset:-4%;pointer-events:none;z-index:0}
+#menuScreen::before{background:radial-gradient(ellipse at 52% 58%,rgba(67,177,255,.16),transparent 38%),radial-gradient(ellipse at 18% 22%,rgba(50,151,255,.12),transparent 30%),radial-gradient(ellipse at 84% 76%,rgba(255,173,83,.10),transparent 24%);mix-blend-mode:screen;animation:menuAurora 18s ease-in-out infinite alternate}
+#menuScreen::after{inset:0;background-image:radial-gradient(circle,rgba(197,237,255,.82) 1px,transparent 2px),radial-gradient(circle,rgba(255,206,139,.72) 1px,transparent 2px),radial-gradient(circle,rgba(99,201,255,.65) 1.2px,transparent 2.4px);background-size:173px 151px,239px 211px,311px 257px;background-position:0 0,70px 42px,120px 90px;opacity:.32;animation:menuDust 30s linear infinite}
+@keyframes menuAurora{0%{transform:translate3d(-1%,0,0) scale(1);opacity:.55}100%{transform:translate3d(1.2%,-.8%,0) scale(1.04);opacity:.9}}
+@keyframes menuDust{0%{background-position:0 0,70px 42px,120px 90px}100%{background-position:170px -260px,-170px -190px,430px -300px}}
+
+#gameScreen{background:#06111f}
+#gameCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.game-shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(2,10,20,.66),transparent 24%,transparent 72%,rgba(2,8,17,.58))}
+.hud{position:absolute;z-index:3;left:clamp(10px,2vw,28px);right:clamp(10px,2vw,28px);top:clamp(8px,1.5vh,18px);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;pointer-events:none}
+.hud-group{display:flex;gap:8px;align-items:stretch}.hud-chip{min-width:100px;padding:9px 13px;border:1px solid rgba(160,218,255,.26);border-radius:14px;background:rgba(4,17,33,.72);box-shadow:0 8px 24px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.08);backdrop-filter:blur(8px);pointer-events:auto}
+.hud-chip .cap{font-size:9px;color:#91b1cf;letter-spacing:.17em;text-transform:uppercase;font-weight:800}.hud-chip .num{font-size:clamp(16px,2vw,23px);font-weight:950;line-height:1.2;font-variant-numeric:tabular-nums}.hud-chip .sub{font-size:10px;color:#a8c5df}
+.hud-level{min-width:130px}.hud-lives{min-width:78px}.hud-lives .num{font-size:14px;letter-spacing:1px;color:#ff7884;text-shadow:0 0 9px rgba(255,75,105,.55)}.hud-progress{height:4px;border-radius:8px;background:rgba(255,255,255,.13);overflow:hidden;margin-top:5px}.hud-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#65dfff,#ffe18a);box-shadow:0 0 10px #61dcff}
+.hud-actions{display:flex;gap:8px;pointer-events:auto}.icon-btn{width:42px;height:42px;border-radius:13px;background:rgba(5,20,38,.8);border:1px solid rgba(157,213,255,.28);font-size:18px;box-shadow:0 7px 18px rgba(0,0,0,.25)}
+.game-bottom{position:absolute;z-index:4;left:clamp(10px,2vw,28px);right:clamp(10px,2vw,28px);bottom:clamp(10px,2vh,22px);display:flex;align-items:flex-end;justify-content:space-between;gap:10px;pointer-events:none}
+.lane-controls{display:flex;gap:8px;pointer-events:auto}.lane-btn{min-width:118px;min-height:48px;padding:8px 13px;border-radius:14px;background:rgba(5,19,36,.78);border:1px solid rgba(139,211,255,.3);box-shadow:0 8px 20px rgba(0,0,0,.25);font-size:11px;font-weight:900;letter-spacing:.05em;display:flex;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(8px)}
+.lane-btn b{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;background:linear-gradient(180deg,#c8f7ff,#58b6ef);color:#06213a;font-size:14px}.lane-btn.active{border-color:#ffe18a;box-shadow:0 0 0 1px rgba(255,218,126,.25),0 0 20px rgba(255,205,93,.25)}
+.move-controls{display:flex;gap:7px;pointer-events:auto}.move-btn{min-width:76px;min-height:48px;padding:6px 10px;border-radius:14px;background:rgba(5,19,36,.82);border:1px solid rgba(111,210,255,.34);box-shadow:0 8px 20px rgba(0,0,0,.25),inset 0 1px rgba(255,255,255,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;touch-action:none;user-select:none;-webkit-user-select:none}.move-btn b{font-size:14px;color:#bceeff;line-height:1.1}.move-btn span{font-size:8px;letter-spacing:.12em;color:#8fb1ce;font-weight:900}.move-btn:active,.move-btn.pressed{background:rgba(25,91,130,.9);border-color:#8de4ff;box-shadow:0 0 18px rgba(72,190,255,.24)}.lane-btn:disabled{opacity:.35;filter:grayscale(1);cursor:not-allowed}
+.unload-btn{pointer-events:auto;min-width:160px;min-height:52px;border-radius:15px;background:linear-gradient(180deg,#fff0b4,#f8b94c 65%,#c87a24);color:#271805;border:1px solid #ffdf91;box-shadow:0 8px 25px rgba(0,0,0,.28),0 0 22px rgba(255,190,68,.18);font-size:12px;font-weight:950;letter-spacing:.06em}.unload-btn:disabled{filter:grayscale(.75);opacity:.65;cursor:not-allowed}.unload-btn small{display:block;font-size:9px;letter-spacing:.03em;opacity:.72;margin-top:2px}
+.tutorial{position:absolute;z-index:5;top:clamp(72px,12vh,112px);left:50%;transform:translateX(-50%);width:min(560px,88vw);padding:12px 16px;border-radius:16px;background:rgba(5,18,33,.9);border:1px solid rgba(130,218,255,.4);box-shadow:0 12px 36px rgba(0,0,0,.32);text-align:center;backdrop-filter:blur(10px)}
+.tutorial strong{display:block;color:#aeeeff;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:5px}.tutorial span{font-size:13px;line-height:1.4;color:#e6f2ff}.tutorial button{margin-left:8px;background:none;color:#ffdc8a;font-weight:900;font-size:11px}
+
+.level-intro{position:absolute;z-index:9;inset:0;display:flex;align-items:center;justify-content:center;padding:18px;background:radial-gradient(ellipse at center,rgba(5,18,33,.48),rgba(2,8,17,.82));backdrop-filter:blur(5px)}
+.level-intro[hidden]{display:none!important}
+.intro-card{position:relative;width:min(650px,92vw);padding:clamp(22px,4vw,38px);border-radius:24px;text-align:center;overflow:hidden;background:linear-gradient(145deg,rgba(9,31,53,.96),rgba(3,13,27,.97));border:1px solid rgba(126,219,255,.48);box-shadow:0 24px 90px rgba(0,0,0,.58),0 0 45px rgba(42,165,235,.14),inset 0 1px rgba(255,255,255,.12);animation:introRise .55s cubic-bezier(.2,.8,.2,1) both}
+.intro-card::before{content:"";position:absolute;inset:-70% -20%;pointer-events:none;background:linear-gradient(110deg,transparent 40%,rgba(107,210,255,.08) 50%,transparent 60%);transform:translateX(-60%);animation:introShimmer 4s ease-in-out infinite}
+.intro-emblem{width:42px;height:42px;display:grid;place-items:center;margin:0 auto 12px;border-radius:13px;color:#102a3e;font-size:23px;background:linear-gradient(145deg,#e4fbff,#61caff 65%,#267bbd);box-shadow:0 0 28px rgba(80,196,255,.4)}
+.intro-kicker{color:#9ce8ff;font-size:10px;font-weight:950;letter-spacing:.2em;text-transform:uppercase}
+.intro-card h2{margin:8px 0 10px;font-size:clamp(22px,4vw,34px);line-height:1.1;color:#f5fbff;text-shadow:0 3px 16px rgba(0,0,0,.35)}
+.intro-card p{position:relative;z-index:1;max-width:540px;margin:0 auto;color:#c9dced;font-size:clamp(12px,1.7vw,15px);line-height:1.65}
+.intro-loading{height:5px;margin:24px 0 17px;border-radius:8px;background:rgba(255,255,255,.12);overflow:hidden}
+.intro-loading i{display:block;width:0;height:100%;border-radius:8px;background:linear-gradient(90deg,#4caaff,#8beeff,#ffe08a);box-shadow:0 0 14px #65dfff;animation:introLoad 4.5s linear forwards}
+.intro-footer{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:12px;color:#7898b5;font-size:9px;font-weight:900;letter-spacing:.14em}
+.intro-footer b{color:#d8f5ff;font-size:13px;margin-left:5px}
+@keyframes introRise{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes introShimmer{0%,35%{transform:translateX(-65%)}80%,100%{transform:translateX(65%)}}
+@keyframes introLoad{from{width:0}to{width:100%}}
+@media(max-height:430px) and (orientation:landscape){.intro-card{padding:15px 22px}.intro-emblem{width:30px;height:30px;margin-bottom:7px;font-size:17px}.intro-card h2{font-size:22px;margin:5px 0}.intro-loading{margin:12px 0}.intro-card p{font-size:11px;line-height:1.4}}
+
+.toast{position:absolute;z-index:8;left:50%;top:48%;transform:translate(-50%,-50%) scale(.96);opacity:0;pointer-events:none;padding:11px 18px;border-radius:30px;background:rgba(5,17,31,.92);border:1px solid rgba(151,218,255,.35);box-shadow:0 10px 35px rgba(0,0,0,.4);font-weight:900;font-size:13px;transition:opacity .2s,transform .2s;white-space:nowrap}.toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.modal-layer{position:absolute;z-index:10;inset:0;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(2,8,17,.72);backdrop-filter:blur(9px)}.modal-layer.show{display:flex}
+.modal{width:min(650px,94vw);max-height:min(86vh,720px);overflow:auto;border-radius:24px;padding:clamp(18px,3vw,30px);background:linear-gradient(145deg,rgba(13,35,59,.98),rgba(4,15,29,.98));border:1px solid rgba(144,213,255,.32);box-shadow:0 25px 90px rgba(0,0,0,.55),inset 0 1px rgba(255,255,255,.08)}
+.modal h2{margin:0 0 7px;font-size:clamp(22px,3vw,30px);letter-spacing:-.03em}.modal-lead{margin:0 0 20px;color:#9fb9d2;font-size:13px;line-height:1.5}.modal-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}.level-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}.level-card{min-height:92px;border-radius:14px;padding:10px 6px;background:linear-gradient(145deg,rgba(39,75,108,.7),rgba(8,24,42,.9));border:1px solid rgba(137,200,241,.2);text-align:center}.level-card:hover{border-color:#75dfff;filter:brightness(1.12)}.level-card .n{font-size:22px;font-weight:950;color:#d8f5ff}.level-card .name{font-size:9px;line-height:1.25;color:#a9c3db;margin-top:4px}.level-card .best{font-size:9px;color:#ffdc83;margin-top:4px}
+.rule-list{display:grid;gap:12px}.rule{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}.rule-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:rgba(79,163,217,.17);font-size:18px}.rule p{margin:0;color:#b6cce0;font-size:13px;line-height:1.5}.rule b{display:block;color:#f1f7ff;margin-bottom:2px}
+.setting-row{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:13px 0;border-bottom:1px solid rgba(150,204,242,.13)}.setting-row:last-child{border:0}.setting-row b{font-size:14px}.setting-row small{display:block;color:#8faac5;font-size:11px;margin-top:3px}.toggle{width:48px;height:27px;border-radius:20px;background:#29435b;padding:3px;flex:none}.toggle i{display:block;width:21px;height:21px;border-radius:50%;background:#c7d9e8;transition:transform .18s}.toggle.on{background:#2d9ed2}.toggle.on i{transform:translateX(21px);background:white}
+.result-score{font-size:clamp(34px,6vw,58px);font-weight:1000;color:#ffe08a;letter-spacing:-.04em;margin:8px 0}.result-sub{color:#abc5dd;font-size:13px}.result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px}.result-stats div{padding:12px;border-radius:12px;background:rgba(255,255,255,.05);text-align:center}.result-stats b{display:block;font-size:19px}.result-stats span{font-size:9px;color:#9bb5ce;text-transform:uppercase;letter-spacing:.08em}
+#rotateGate{position:absolute;z-index:50;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:28px;background:radial-gradient(circle at 50% 40%,#173d61,#06111f 72%)}.rotate-inner{max-width:320px}.rotate-icon{font-size:62px;display:block;margin-bottom:18px;animation:tilt 2s ease-in-out infinite}.rotate-inner h2{margin:0 0 8px;font-size:23px}.rotate-inner p{margin:0;color:#a7c0d8;font-size:13px;line-height:1.5}@keyframes tilt{0%,100%{transform:rotate(0)}50%{transform:rotate(90deg)}}
+@media(orientation:portrait){#rotateGate{display:flex}#menuScreen,#gameScreen{visibility:hidden}}
+@media(max-width:760px){.menu-wrap{grid-template-columns:1fr;align-content:center;gap:18px;padding:18px}.brand{text-align:center}.brand-kicker{justify-content:center;margin-bottom:9px}.brand p{margin:12px auto 0;max-width:450px;font-size:12px}.menu-card{width:min(430px,100%);margin:0 auto;padding:17px;border-radius:20px}.menu-card h2{margin-bottom:10px}.menu-buttons{grid-template-columns:1fr 1fr;gap:8px}.menu-buttons .primary{grid-column:1/-1}.btn{min-height:42px;font-size:12px}.menu-foot{margin-top:12px}.hud-chip{min-width:66px;padding:7px 8px;border-radius:11px}.hud-lives{min-width:62px}.hud-lives .num{font-size:12px;letter-spacing:0}.hud-chip .cap{font-size:8px}.hud-chip .num{font-size:17px}.hud-level{min-width:100px}.icon-btn{width:36px;height:36px}.lane-btn{min-width:82px;min-height:42px;padding:6px 7px;font-size:9px}.lane-btn b{width:22px;height:22px}.move-controls{gap:5px}.move-btn{min-width:58px;min-height:42px;padding:5px 6px}.move-btn b{font-size:12px}.move-btn span{font-size:7px}.unload-btn{min-width:112px;min-height:44px;font-size:10px}.game-bottom{bottom:8px}.tutorial{top:58px;padding:9px 12px}.tutorial span{font-size:11px}.level-grid{grid-template-columns:repeat(5,1fr);gap:6px}.level-card{min-height:76px}.level-card .n{font-size:19px}}
+@media(max-height:430px) and (orientation:landscape){.menu-wrap{height:96vh;padding:12px 24px;gap:24px}.brand h1{font-size:clamp(30px,6vh,50px)}.brand p{font-size:11px;margin-top:10px}.menu-card{padding:14px}.menu-buttons{gap:7px}.btn{min-height:36px;padding:7px 12px;font-size:11px}.menu-foot{margin-top:8px}.hud{top:6px}.hud-chip{padding:6px 9px}.hud-chip .num{font-size:16px}.game-bottom{bottom:6px;gap:6px}.lane-btn{min-height:38px}.move-btn{min-height:38px}.unload-btn{min-height:40px}.tutorial{top:53px}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+.modal:has(.level-grid){width:min(1040px,97vw)}
+.level-grid{grid-template-columns:repeat(10,minmax(0,1fr));gap:6px}
+.level-card{min-height:68px;padding:7px 3px}
+.level-card .n{font-size:18px}.level-card .name{font-size:8px;min-height:20px}.level-card .best{font-size:8px}
+.level-card.locked{opacity:.42;filter:grayscale(.65);cursor:not-allowed}
+.level-section-title{margin:16px 0 8px;color:#8fe1ff;font-size:11px;letter-spacing:.16em}
+@media(max-width:760px){.level-grid{grid-template-columns:repeat(8,minmax(0,1fr));gap:5px}.level-card{min-height:62px}.level-card .n{font-size:16px}.level-card .name{font-size:7px}.level-card .best{font-size:7px}}
+
+
+
+html,body{height:100vh;height:var(--viewport-height,100dvh);min-height:0}
+#app{top:var(--viewport-top,0px);left:0;right:0;bottom:auto;height:var(--viewport-height,100dvh);width:100%;}
+.screen{height:100%;min-height:0}
+.hud{top:calc(env(safe-area-inset-top,0px) + 7px);left:calc(env(safe-area-inset-left,0px) + clamp(8px,1.5vw,20px));right:calc(env(safe-area-inset-right,0px) + clamp(8px,1.5vw,20px));}
+.game-bottom{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:end;gap:10px;left:calc(env(safe-area-inset-left,0px) + 10px);right:calc(env(safe-area-inset-right,0px) + 10px);bottom:calc(env(safe-area-inset-bottom,0px) + 9px);}
+.lane-controls{grid-column:1;justify-self:start;align-self:end;}
+.unload-btn{grid-column:2;justify-self:center;align-self:end;min-width:150px;min-height:54px;padding:7px 12px;}
+.move-controls{grid-column:3;justify-self:end;align-self:end;}
+@media (max-width:900px) and (orientation:landscape){
+ .hud{gap:5px;top:calc(env(safe-area-inset-top,0px) + 5px)}
+ .hud-group{gap:4px}
+ .hud-chip{min-width:55px;padding:5px 6px;border-radius:10px}
+ .hud-level{min-width:94px;max-width:112px}
+ .hud-chip .cap{font-size:7px;letter-spacing:.1em}
+ .hud-chip .num{font-size:14px;line-height:1.15}
+ .hud-chip .sub{font-size:8px}
+ .hud-lives{min-width:48px}
+ .hud-lives .num{font-size:11px;letter-spacing:0}
+ .hud-actions{gap:4px}
+ .icon-btn{width:32px;height:34px;border-radius:10px;font-size:15px}
+ .game-bottom{grid-template-columns:minmax(76px,1fr) minmax(116px,auto) minmax(120px,1fr);gap:5px;bottom:calc(env(safe-area-inset-bottom,0px) + 7px);left:calc(env(safe-area-inset-left,0px) + 7px);right:calc(env(safe-area-inset-right,0px) + 7px)}
+ .lane-controls{flex-direction:column;gap:5px;align-items:stretch;width:82px}
+ .lane-btn{width:82px;min-width:82px;min-height:43px;padding:4px 5px;border-radius:11px;gap:5px;font-size:8px;letter-spacing:.025em}
+ .lane-btn b{width:23px;height:23px;flex:none;font-size:14px}
+ .lane-btn span{line-height:1.1;text-align:left}
+ .unload-btn{min-width:116px;width:min(26vw,142px);min-height:54px;padding:6px 7px;border-radius:13px;font-size:9px;letter-spacing:.025em;line-height:1.15}
+ .unload-btn small{font-size:7px;line-height:1.2}
+ .move-controls{gap:5px}
+ .move-btn{width:clamp(58px,8vw,72px);min-width:58px;min-height:58px;padding:5px 4px;border-radius:13px}
+ .move-btn b{font-size:21px;line-height:1}
+ .move-btn span{font-size:8px;letter-spacing:.08em}
+ .tutorial{top:54px;width:min(460px,68vw);padding:7px 10px}
+ .tutorial strong{font-size:8px;margin-bottom:3px}
+ .tutorial span{font-size:10px}
+ .modal-layer{padding:8px}
+ .modal{max-height:calc(var(--viewport-height,100dvh) - 16px);padding:15px;border-radius:18px}
+ .level-card{min-height:55px}
+ .menu-wrap{height:calc(var(--viewport-height,100dvh) - 12px);max-height:680px;padding:10px 18px;gap:18px}
+ .brand h1{font-size:clamp(30px,5.5vw,52px)}
+ .brand p{font-size:11px;line-height:1.4;margin-top:10px}
+ .menu-card{padding:13px;border-radius:18px}
+ .menu-card h2{font-size:11px;margin-bottom:9px}
+ .menu-buttons{gap:6px}
+ .menu-buttons .btn{min-height:36px;padding:6px 9px;font-size:10px}
+ .menu-foot{font-size:8px;margin-top:8px}
+}
+@media (max-width:560px) and (orientation:landscape){
+ .hud-group:first-child .hud-chip:nth-child(2){display:none}
+ .hud-group:nth-child(2) .hud-chip:nth-child(2) .sub{display:none}
+ .hud-group:nth-child(2) .hud-chip:nth-child(3) .sub{display:none}
+ .game-bottom{grid-template-columns:78px minmax(108px,1fr) 120px;gap:4px}
+ .lane-controls,.lane-btn{width:76px;min-width:76px}
+ .lane-btn{min-height:40px;font-size:7px}
+ .lane-btn b{width:20px;height:20px}
+ .unload-btn{width:108px;min-width:108px;min-height:50px;font-size:8px}
+ .move-btn{width:56px;min-width:56px;min-height:54px}
+ .move-controls{gap:4px}
+}
+@media (max-height:420px) and (orientation:landscape){
+ .hud-chip{padding:4px 5px}
+ .hud-chip .num{font-size:13px}
+ .game-bottom{bottom:calc(env(safe-area-inset-bottom,0px) + 5px)}
+ .lane-btn{min-height:38px}
+ .move-btn{min-height:50px}
+ .unload-btn{min-height:48px}
+ .intro-card{max-height:calc(var(--viewport-height,100dvh) - 16px);overflow:auto}
+}
+@media (hover:none) and (pointer:coarse){
+ button{ -webkit-touch-callout:none; }
+ .lane-btn,.move-btn,.unload-btn,.icon-btn{touch-action:manipulation}
+ .move-btn{touch-action:none}
+}
+
+
+
+@media (max-width: 900px) and (orientation: landscape) and (pointer: coarse) {
+ .game-bottom{display:grid;grid-template-columns:minmax(54px,1fr) minmax(94px,auto) minmax(54px,1fr);align-items:end;column-gap:clamp(5px,1.4vw,16px);left:calc(env(safe-area-inset-left,0px) + 9px);right:calc(env(safe-area-inset-right,0px) + 9px);bottom:calc(env(safe-area-inset-bottom,0px) + 8px)}
+ .move-controls{display:contents}
+ .move-btn{width:clamp(54px,9.5vw,76px);min-width:54px;min-height:clamp(54px,13vh,68px);padding:5px;border-radius:17px;align-self:end;touch-action:none;user-select:none;-webkit-user-select:none}
+ .move-btn[data-move="-1"]{grid-column:1;grid-row:1;justify-self:start}
+ .move-btn[data-move="1"]{grid-column:3;grid-row:1;justify-self:end}
+ .move-btn b{font-size:clamp(25px,4.6vw,33px);line-height:1}
+ .move-btn span,.lane-btn span{display:none}
+ .lane-controls{position:absolute;left:0;bottom:calc(clamp(54px,13vh,68px) + 10px);display:flex;flex-direction:column;gap:6px;width:auto;align-items:flex-start}
+ .lane-btn{width:clamp(46px,7vw,55px);min-width:46px;min-height:43px;padding:4px;justify-content:center;border-radius:13px}
+ .lane-btn b{font-size:23px;width:auto;height:auto;line-height:1}
+ .unload-btn{grid-column:2;grid-row:1;justify-self:center;align-self:end;min-width:100px;width:clamp(100px,23vw,142px);min-height:53px;padding:7px 8px}
+ .unload-btn small{display:none}
+ .unload-btn #unloadLabel{font-size:10px;line-height:1.2}
+}
+@media (max-width:900px) and (max-height:360px) and (orientation:landscape) and (pointer:coarse){
+ .lane-controls{bottom:61px;gap:4px}.lane-btn{min-height:36px}.move-btn{min-height:51px}.unload-btn{min-height:49px}
+}
+
+
+
+@media (pointer: coarse) {
+  #gameCanvas { touch-action: none; }
+  .lane-controls { display: none !important; }
+}
+
+
+.modal:has(.expedition-guide){width:min(1000px,96vw);max-height:min(94dvh,850px);padding:0;overflow:auto;background:#071426;border:1px solid #a97a43;box-shadow:0 25px 85px #000b,0 0 45px #1469a044}
+.expedition-guide{position:relative;isolation:isolate;min-height:100%;padding:clamp(18px,3vw,36px);background:linear-gradient(90deg,#061426ee 0%,#061426e5 55%,#061426a9 100%),url('assets/rules-cavern.webp') center/cover no-repeat}
+.expedition-guide:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;box-shadow:inset 0 0 65px #061426a9}
+.guide-kicker{font-size:11px;font-weight:900;letter-spacing:.22em;color:#ffcb74;text-transform:uppercase;margin-bottom:8px}
+.expedition-guide h2{font-size:clamp(24px,3.5vw,42px);line-height:1.08;color:#fff0c5;text-shadow:0 2px 14px #000;margin:0 0 8px}
+.guide-subtitle{color:#bed5e9;font-size:clamp(12px,1.3vw,15px);max-width:650px;line-height:1.5;margin:0 0 22px}
+.guide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.guide-card{display:flex;gap:12px;align-items:flex-start;min-height:108px;padding:14px;border:1px solid #77b9e039;border-radius:17px;background:linear-gradient(135deg,#102b46ec,#081728df);box-shadow:inset 0 1px #ffffff14,0 8px 20px #0005}
+.guide-card.feature{border-color:#ffc16a6b;background:linear-gradient(135deg,#3c2b24ec,#102338e8)}
+.guide-art{width:66px;height:66px;flex:0 0 66px;display:grid;place-items:center;border-radius:13px;background:radial-gradient(circle,#245e8a77,#071a2f88);border:1px solid #78c5e043;overflow:hidden}
+.guide-art img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 3px 6px #000a)}
+.guide-art .guide-symbol{font-size:39px;color:#ffd67d;text-shadow:0 0 16px #ffca6755}
+.guide-card h3{margin:0 0 5px;color:#f7f3e6;font-size:15px;line-height:1.2}
+.guide-card p{margin:0;color:#b8d0e4;font-size:12px;line-height:1.48}
+.guide-card strong{color:#8fe5ff}
+.guide-footer{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-top:22px}
+.guide-footer .hint{color:#9cb8cd;font-size:11px;line-height:1.4}
+.guide-footer .btn{min-width:145px}
+@media(max-width:690px){.guide-grid{grid-template-columns:1fr;gap:8px}.guide-card{min-height:0;padding:10px;gap:10px}.guide-art{width:48px;height:48px;flex-basis:48px}.guide-art .guide-symbol{font-size:28px}.guide-card h3{font-size:13px}.guide-card p{font-size:11px}.expedition-guide{padding:15px;background-position:center}.guide-footer{margin-top:14px}.guide-footer .btn{min-width:105px}}
+@media(max-height:430px) and (orientation:landscape){.expedition-guide{padding:15px 20px}.guide-subtitle{margin-bottom:12px}.guide-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.guide-card{padding:9px;min-height:0}.guide-art{width:42px;height:42px;flex-basis:42px}.guide-card p{font-size:10px}.guide-card h3{font-size:12px}.guide-footer{margin-top:10px}}
+
+
+.modal:has(.level-atlas){width:min(1120px,98vw);max-height:min(94dvh,900px);padding:0;overflow:auto;border:1px solid #c58b46;border-radius:20px;background:#061526;box-shadow:0 22px 90px #000c,0 0 35px #2a83bd38}
+.level-atlas{padding:clamp(15px,2.8vw,30px);background:linear-gradient(90deg,#061629f2,#061629d9 64%,#061629bf),url('assets/levels-cavern.webp') center/cover fixed}
+.atlas-top{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:16px}
+.atlas-kicker{color:#ffd17d;font-size:11px;font-weight:900;letter-spacing:.2em}
+.level-atlas h2{margin:5px 0 7px;color:#fff1c7;font-size:clamp(24px,3vw,38px);text-shadow:0 3px 15px #000}
+.atlas-intro{margin:0;color:#bdd2e5;font-size:12px;line-height:1.5;max-width:650px}
+.atlas-progress{min-width:150px;padding:12px;border:1px solid #e8b75b68;background:#0d2a3edc;border-radius:14px;text-align:right}
+.atlas-progress strong{font-size:25px;color:#ffe2a1;line-height:1}.atlas-progress small{display:block;color:#a5c3d8;font-size:10px;margin-top:4px}
+.atlas-meter{height:6px;background:#193b50;border-radius:10px;margin-top:9px;overflow:hidden}.atlas-meter i{display:block;height:100%;background:linear-gradient(90deg,#39c8ee,#ffcb69);border-radius:10px}
+.atlas-chapter{display:flex;align-items:center;gap:10px;margin:18px 0 10px;color:#a9e9ff;font-weight:900;font-size:12px;letter-spacing:.13em}
+.atlas-chapter:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,#5abce36e,transparent)}
+.atlas-chapter .chapter-icon{width:29px;height:29px;border-radius:9px;display:grid;place-items:center;background:#16425b;border:1px solid #6dd8ff64;font-size:16px}
+.level-atlas .level-grid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:8px}
+.level-atlas .level-card{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:113px;padding:10px 5px;border-radius:14px;background:linear-gradient(150deg,#1d3b53ed,#091b2eea);border:1px solid #73c7e33b;box-shadow:inset 0 1px #ffffff12,0 5px 14px #0005;transition:transform .16s,border-color .16s,box-shadow .16s;overflow:hidden}
+.level-atlas .level-card:not(:disabled):hover{transform:translateY(-3px);border-color:#ffda8c;box-shadow:0 0 22px #ffc75e35}
+.level-atlas .level-card .level-art{height:32px;width:36px;display:grid;place-items:center}
+.level-atlas .level-card .level-art img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 2px 5px #0009)}
+.level-atlas .level-card .level-art .lock-symbol{font-size:22px;color:#8199a8}
+.level-atlas .level-card .n{font-size:21px;color:#e9f7ff;line-height:1;font-weight:950}
+.level-atlas .level-card .name{margin:0;font-size:9px;color:#c0d7e8;line-height:1.22;min-height:23px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.level-atlas .level-card .best{margin:0;font-size:9px;min-height:12px;font-weight:850;color:#90dfff}
+.level-atlas .level-card.locked{opacity:.69;filter:none;background:linear-gradient(155deg,#14283cdd,#081625ed);border-color:#72899b28;cursor:not-allowed}
+.level-atlas .level-card.locked .n{color:#8298a9}.level-atlas .level-card.locked .name{color:#748ca1}.level-atlas .level-card.locked .best{color:#74899a}
+.level-atlas .level-card.completed{border-color:#e9b96570;background:linear-gradient(155deg,#433720dd,#12283bed)}.level-atlas .level-card.completed .best{color:#ffda86}
+.level-atlas .level-card.available{border-color:#72e9ed;background:linear-gradient(155deg,#174b61,#102e44);box-shadow:0 0 15px #3bc8ff35,inset 0 1px #a4f7ff4d}
+.level-atlas .level-card.available .best{color:#87f5e3}
+.atlas-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:20px}
+.atlas-legend{color:#a5c4d8;font-size:10px;line-height:1.4}
+@media(max-width:850px){.level-atlas .level-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.level-atlas .level-card{min-height:100px}.atlas-progress{min-width:110px}}
+@media(max-width:540px){.level-atlas{padding:13px}.atlas-top{gap:8px}.atlas-progress{min-width:88px;padding:8px}.atlas-progress strong{font-size:19px}.level-atlas .level-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.level-atlas .level-card{min-height:96px}.atlas-legend{max-width:200px}}
+@media(max-height:440px) and (orientation:landscape){.level-atlas .level-grid{grid-template-columns:repeat(8,minmax(0,1fr))}.level-atlas .level-card{min-height:86px;padding:6px 3px;gap:3px}.level-atlas .level-card .level-art{height:23px;width:28px}.level-atlas .level-card .n{font-size:17px}.level-atlas .level-card .name{font-size:8px;min-height:19px}.level-atlas .level-card .best{font-size:8px}.atlas-top{margin-bottom:8px}}
+
+
+.game-bottom { display: none !important; }
+@media (pointer: coarse) {
+  .game-bottom { display: grid !important; }
+}
+
+.modal:has(.config-panel){width:min(820px,96vw);max-height:min(92dvh,820px);padding:0;border:1px solid #b58b58;background:#071a2c}
+.config-panel{padding:clamp(17px,3vw,30px);background:radial-gradient(ellipse at 100% 0%,#1b47648a,transparent 55%),linear-gradient(140deg,#0a2035,#061323)}
+.config-eyebrow{color:#f7c57a;letter-spacing:.17em;font-size:11px;font-weight:900}
+.config-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:5px 0 19px}
+.config-header h2{font-size:clamp(26px,3.4vw,37px);color:#fff0d0;margin:0 0 5px}
+.config-header p{margin:0;color:#a9c3d9;font-size:12px}
+.config-header img{height:65px;width:65px;object-fit:contain;filter:drop-shadow(0 0 15px #69d9ff88)}
+.config-section{margin:14px 0;border:1px solid #6cadd035;border-radius:16px;background:#092036bb;overflow:hidden}
+.config-section h3{margin:0;padding:12px 15px;background:#1b466050;color:#8bdcff;font-size:11px;letter-spacing:.14em}
+.config-item{display:flex;align-items:center;gap:13px;padding:12px 15px;border-top:1px solid #7aa5bd20}
+.config-icon{flex:0 0 37px;width:37px;height:37px;display:grid;place-items:center;border-radius:10px;background:#18455d;color:#ffd18b;font-size:22px}
+.config-copy{flex:1;min-width:0}.config-copy b{display:block;color:#e9f4ff;font-size:13px}.config-copy small{display:block;color:#9db9cd;font-size:11px;margin-top:3px;line-height:1.35}
+.config-item select{min-width:118px;max-width:140px;padding:9px 7px;color:#f0f8ff;border:1px solid #65bce46e;background:#12334a;border-radius:10px;font-weight:700}
+.config-slider{width:145px;display:flex;align-items:center;gap:7px}.config-slider input{width:100%;accent-color:#64d8ff;cursor:pointer}.config-slider output{min-width:37px;color:#b6e8ff;font-size:11px;font-weight:800}
+.config-bottom{display:flex;justify-content:space-between;gap:10px;margin-top:20px;flex-wrap:wrap}
+@media(max-width:530px){.config-panel{padding:13px}.config-item{padding:10px;gap:8px}.config-icon{width:30px;height:30px;flex-basis:30px;font-size:17px}.config-copy b{font-size:12px}.config-copy small{font-size:10px}.config-slider{width:105px}.config-item select{min-width:95px;max-width:110px;font-size:11px}.config-header img{height:44px;width:44px}}
+
+
+#menuScreen .brand{max-width:750px;position:relative;isolation:isolate}
+#menuScreen .brand:before{content:"";position:absolute;inset:-24px -24px -32px;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 45% 48%,#1b719a35,transparent 66%)}
+#menuScreen .brand-kicker{color:#c2ecff;text-shadow:0 0 16px #5cdfff8c;font-size:clamp(10px,1.1vw,14px)}
+#menuScreen .brand h1{font-family:Impact,'Arial Black',system-ui,sans-serif;font-size:clamp(48px,6.7vw,100px);line-height:.89;letter-spacing:-.038em;font-weight:950;margin:4px 0 0;text-transform:uppercase;background:linear-gradient(180deg,#fff9d7 0%,#bdf5ff 25%,#64b6e7 49%,#27678f 76%,#a7e5fa 94%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:1px #bcefff44;filter:drop-shadow(0 4px 0 #0b304b) drop-shadow(0 11px 9px #000a);text-wrap:balance}
+#menuScreen .brand h1 span{color:transparent;background:linear-gradient(180deg,#fff5cb 0%,#ffcf80 38%,#d17a39 73%,#ffe0a2 98%);-webkit-background-clip:text;background-clip:text;-webkit-text-stroke:1px #ffdb9955;filter:drop-shadow(0 2px 0 #593b24)}
+#menuScreen .brand-motto{display:flex;align-items:center;gap:12px;width:max-content;max-width:100%;margin:24px 0 0;padding:9px 17px;border:1px solid #f1bd655e;border-radius:4px;background:linear-gradient(90deg,#0a2434cc,#29402fb5,#0a2434cc);box-shadow:inset 0 1px #fff4b52c,0 6px 22px #0006;color:#ffe0a4;font-weight:900;font-size:clamp(10px,1.25vw,15px);letter-spacing:.14em;text-shadow:0 2px 8px #000;line-height:1.35;text-align:center}
+#menuScreen .motto-gem{color:#7de9ff;font-size:18px;filter:drop-shadow(0 0 7px #42d8ff)}
+#menuScreen .brand-emblem{display:flex;align-items:center;gap:10px;width:min(270px,65%);margin:16px 0 0;color:#e9ba68;opacity:.86;font-size:12px}
+#menuScreen .brand-emblem i{height:1px;flex:1;background:linear-gradient(90deg,transparent,#e9ba68,transparent)}
+@media(max-width:760px){#menuScreen .brand-motto{margin:13px auto 0;padding:7px 10px;gap:7px;font-size:10px;letter-spacing:.08em}#menuScreen .brand-emblem{margin:9px auto 0}#menuScreen .brand h1{font-size:clamp(39px,9vw,72px)}}
+@media(max-height:430px) and (orientation:landscape){#menuScreen .brand h1{font-size:clamp(34px,8.5vh,64px)}#menuScreen .brand-motto{margin-top:9px;padding:6px 10px}#menuScreen .brand-emblem{margin-top:6px}}
+
+
+#menuScreen .brand{max-width:none;width:100%;min-width:0}
+#menuScreen .brand:before{display:none}
+#menuScreen .brand-logo-image{display:block;width:min(100%,820px);height:auto;object-fit:contain;filter:drop-shadow(0 12px 25px #0008);border-radius:8px}
+#menuScreen .brand .visually-hidden{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+@media(max-width:760px){#menuScreen .brand-logo-image{width:min(100%,580px);margin-inline:auto}}
+@media(max-height:430px) and (orientation:landscape){#menuScreen .brand-logo-image{max-height:53dvh;width:auto;max-width:100%;object-fit:contain}}
+
+
+#menuScreen{overflow-y:auto;overflow-x:hidden}
+#menuScreen .menu-wrap{width:min(700px,95vw);height:auto;min-height:100%;max-height:none;margin:0 auto;padding:clamp(14px,3vh,34px) 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(2px,1vh,12px);box-sizing:border-box}
+#menuScreen .brand{flex:none;width:100%;max-width:680px;margin:0 auto;align-self:center;position:relative;z-index:2;text-align:center}
+#menuScreen .brand-logo-image{display:block;width:min(100%,680px);height:auto;max-height:clamp(145px,42vh,360px);object-fit:contain;margin:0 auto;border-radius:0;filter:drop-shadow(0 14px 22px #0009)}
+#menuScreen .menu-card{flex:none;width:min(100%,570px);max-width:none;margin:0 auto;padding:clamp(14px,2.5vh,25px);border-radius:23px;text-align:center;box-sizing:border-box}
+#menuScreen .menu-buttons{display:grid;grid-template-columns:1fr;gap:clamp(6px,1vh,10px)}
+#menuScreen .menu-buttons .primary{grid-column:auto}
+#menuScreen .menu-buttons .btn{min-height:clamp(40px,6vh,55px);font-size:clamp(12px,1.5vw,16px)}
+#menuScreen .menu-foot{margin-top:clamp(8px,1.5vh,16px)}
+@media(max-height:620px) and (orientation:landscape){#menuScreen .menu-wrap{padding:7px 12px;gap:0}#menuScreen .brand-logo-image{max-height:clamp(95px,35vh,220px);width:auto;max-width:100%}#menuScreen .menu-card{width:min(100%,540px);padding:9px 16px}#menuScreen .menu-buttons{gap:5px}#menuScreen .menu-buttons .btn{min-height:30px;padding:5px 10px;font-size:11px}#menuScreen .menu-foot{margin-top:6px;font-size:9px}}
+@media(max-width:760px) and (orientation:landscape){#menuScreen .menu-wrap{width:min(540px,96vw);padding:6px 9px;gap:0}#menuScreen .brand-logo-image{max-height:35dvh;width:auto;max-width:100%}#menuScreen .menu-card{width:min(100%,510px);padding:9px 13px}#menuScreen .menu-buttons{grid-template-columns:1fr 1fr;gap:5px}#menuScreen .menu-buttons .primary{grid-column:1/-1}#menuScreen .menu-buttons .btn{min-height:34px;font-size:11px}#menuScreen .menu-foot{margin-top:6px}}
+
+
+#menuScreen{overflow:hidden!important;overscroll-behavior:none;touch-action:pan-x}
+#menuScreen .menu-wrap{height:100%!important;min-height:0!important;max-height:100%!important;overflow:hidden;box-sizing:border-box;justify-content:center;gap:clamp(0px,1vh,8px);padding:clamp(4px,1.5vh,14px) 10px!important}
+#menuScreen .brand{min-height:0;flex:0 1 auto!important;display:flex;align-items:center;justify-content:center}
+#menuScreen .brand-logo-image{display:block;max-height:min(39dvh,320px)!important;width:auto!important;max-width:min(95%,650px)!important;object-fit:contain}
+#menuScreen .menu-card{flex:0 1 auto!important;min-height:0;overflow:hidden;width:min(100%,570px)}
+#menuScreen .menu-buttons .btn{min-height:clamp(29px,5.6dvh,51px)!important;padding:clamp(3px,.8vh,9px) 9px}
+#menuScreen .menu-foot{margin-top:clamp(3px,1vh,11px)!important}
+
+.modal,.modal-layer,.level-atlas,.expedition-guide,.config-panel{scrollbar-width:none;-ms-overflow-style:none}
+.modal::-webkit-scrollbar,.modal-layer::-webkit-scrollbar,.level-atlas::-webkit-scrollbar,.expedition-guide::-webkit-scrollbar,.config-panel::-webkit-scrollbar{display:none;width:0;height:0}
+@media(max-height:520px) and (orientation:landscape){
+ #menuScreen .menu-wrap{gap:0!important;padding:3px 9px!important}
+ #menuScreen .brand-logo-image{max-height:32dvh!important}
+ #menuScreen .menu-card{padding:clamp(5px,1.4dvh,10px)!important}
+ #menuScreen .menu-buttons{gap:clamp(2px,.7dvh,5px)!important}
+ #menuScreen .menu-buttons .btn{min-height:clamp(25px,5.2dvh,32px)!important;padding:2px 7px!important;font-size:clamp(10px,2.5dvh,12px)!important}
+ #menuScreen .menu-foot{margin-top:3px!important;font-size:9px!important}
+}
+@media(max-width:760px) and (orientation:landscape){
+ #menuScreen .menu-buttons{grid-template-columns:1fr 1fr}
+ #menuScreen .menu-buttons .primary{grid-column:1/-1}
+ #menuScreen .brand-logo-image{max-height:35dvh!important}
+}
+
+
+:root{--cm-accent:#8bdfff;--cm-gold:#ffd38a}
+.btn{transition:transform .14s ease,filter .16s ease,box-shadow .16s ease;touch-action:manipulation}
+.btn:not(:disabled):active{transform:scale(.97)}
+.btn:focus-visible,.level-card:focus-visible,.toggle:focus-visible{outline:3px solid #ffe29b;outline-offset:3px}
+.modal{box-shadow:0 22px 75px #000a,0 0 0 1px #6abce022}
+.modal h2{letter-spacing:-.025em}
+.result-upgrade{text-align:center;position:relative;isolation:isolate;overflow:hidden;padding:8px 4px 4px}
+.result-upgrade h2{position:relative;color:#fff0c8;text-shadow:0 3px 20px #f0b94355}
+.result-upgrade .victory-kicker{font-size:11px;letter-spacing:.2em;font-weight:900;color:#ffdf8f;margin:2px 0 7px;animation:victoryReveal .55s both}
+.victory-emblem{position:relative;display:block;margin:0 auto;width:min(240px,46vw);max-height:26dvh;object-fit:contain;filter:drop-shadow(0 10px 20px #ffb12d66);animation:victoryEnter .85s cubic-bezier(.16,1.25,.35,1) both,victoryFloat 3.4s ease-in-out 1s infinite}
+.victory-rays{position:absolute;left:50%;top:8%;width:min(400px,70vw);aspect-ratio:1;transform:translateX(-50%);background:repeating-conic-gradient(from 0deg,#ffd76a22 0deg 10deg,transparent 10deg 22deg);border-radius:50%;mask-image:radial-gradient(circle,transparent 0%,#000 35%,transparent 75%);animation:victorySpin 20s linear infinite;pointer-events:none}
+.is-victory:after{content:"✦　✧　✦　✧　✦";position:absolute;top:0;left:0;right:0;color:#f8d17b;letter-spacing:1.6em;opacity:.85;animation:victorySpark 2.4s ease-in-out infinite;pointer-events:none}
+.is-victory .result-score{color:#ffe39c;text-shadow:0 0 22px #ffcf5e77}
+.result-stats>div{border-radius:13px}
+@keyframes victoryEnter{from{opacity:0;transform:translateY(40px) scale(.5) rotate(-12deg)}to{opacity:1;transform:translateY(0) scale(1) rotate(0)}}
+@keyframes victoryReveal{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes victoryFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes victorySpin{to{transform:translateX(-50%) rotate(360deg)}}
+@keyframes victorySpark{0%,100%{opacity:.2;transform:translateY(8px)}50%{opacity:.9;transform:translateY(0)}}
+@media(max-height:460px){.victory-emblem{max-height:20dvh;width:min(150px,35vw)}.result-upgrade{padding:0}.victory-kicker{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.victory-emblem,.victory-rays,.victory-kicker,.is-victory:after,.btn{animation:none!important;transition:none!important}}
+
+
+.result-upgrade .result-action-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;width:min(100%,560px);margin:20px auto 0;align-items:stretch}
+.result-upgrade .result-action-grid .btn{width:100%!important;min-width:0!important;min-height:54px;margin:0!important;padding:10px 8px;display:flex;align-items:center;justify-content:center;text-align:center;white-space:normal;line-height:1.25;font-size:clamp(12px,1.4vw,16px)}
+.result-upgrade .result-action-grid.no-next .btn:first-child{grid-column:1/-1}
+.level-atlas .atlas-actions{justify-content:flex-end}
+@media(max-width:480px){.result-upgrade .result-action-grid{gap:8px;margin-top:12px}.result-upgrade .result-action-grid .btn{min-height:44px;font-size:12px;padding:8px 4px}}
+@media(max-height:440px) and (orientation:landscape){.result-upgrade .result-action-grid{gap:6px;margin-top:8px}.result-upgrade .result-action-grid .btn{min-height:35px;font-size:11px;padding:5px}}
+
+
+#menuScreen .menu-wrap{transform:translateY(-12px)}
+#menuScreen .brand-logo-image{image-rendering:auto;filter:drop-shadow(0 10px 17px #0009)}
+
+.result-upgrade .victory-rays{display:none!important}
+.result-upgrade.is-victory::before{content:"✦";position:absolute;left:2%;top:39%;font-size:clamp(19px,4vw,38px);color:#eec16b;text-shadow:0 0 14px #eab34a77;pointer-events:none}
+.result-upgrade.is-victory::after{content:"✦";position:absolute;left:auto;right:2%;top:39%;font-size:clamp(19px,4vw,38px);letter-spacing:normal;color:#eec16b;text-shadow:0 0 14px #eab34a77;pointer-events:none;animation:none}
+@media(max-height:460px){#menuScreen .menu-wrap{transform:translateY(-5px)}.result-upgrade.is-victory::before,.result-upgrade.is-victory::after{top:28%;font-size:19px}}
+@media(max-width:420px){.result-upgrade.is-victory::before{left:0}.result-upgrade.is-victory::after{right:0}}
+
+
+#assetLoading[hidden]{display:none!important}
+#assetLoading{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:#061527ee;backdrop-filter:blur(8px);color:#f4f8ff}
+.asset-loading-card{display:flex;flex-direction:column;align-items:center;gap:9px;padding:26px 36px;border:1px solid #6ac5f466;border-radius:20px;background:#0b253d;text-align:center;box-shadow:0 20px 70px #0009}
+.asset-loading-card strong{font-size:20px}.asset-loading-card span{color:#a8c7d9;font-size:12px}.asset-loading-card small{color:#f3cb78}
+.asset-loading-gem{font-size:42px;color:#74e6ff;animation:gemReadyPulse 1.5s ease-in-out infinite}
+@keyframes gemReadyPulse{50%{opacity:.5;transform:scale(.88)}}
+@media(prefers-reduced-motion:reduce){.asset-loading-gem{animation:none}}
+
+
+@media (pointer:coarse) and (orientation:landscape){
+  #menuScreen .menu-wrap{
+    width:min(94vw,840px)!important;
+    height:100%!important;
+    padding:clamp(5px,1.3dvh,16px) 0!important;
+    margin:0 auto!important;
+    gap:clamp(3px,1.1dvh,12px)!important;
+    transform:translateY(-3px)!important;
+    display:flex!important;flex-direction:column!important;
+    justify-content:center!important;align-items:center!important;
+  }
+  #menuScreen .brand,#menuScreen .menu-card{
+    box-sizing:border-box!important;
+    width:min(100%,min(80vw,680px))!important;
+    max-width:none!important;min-width:0!important;
+    flex:0 1 auto!important;margin:0 auto!important;
+  }
+  #menuScreen .brand{min-height:0!important;max-height:40dvh!important}
+  #menuScreen .brand-logo-image{
+    width:100%!important;max-width:100%!important;
+    height:auto!important;max-height:40dvh!important;
+    object-fit:contain!important;object-position:center!important;
+  }
+  #menuScreen .menu-card{
+    padding:clamp(7px,1.7dvh,18px)!important;
+    overflow:visible!important;
+  }
+  #menuScreen .menu-buttons{display:grid!important;grid-template-columns:1fr!important;gap:clamp(4px,.95dvh,10px)!important}
+  #menuScreen .menu-buttons .btn{
+    grid-column:auto!important;
+    width:100%!important;
+    min-height:clamp(32px,7dvh,61px)!important;
+    padding:clamp(4px,1dvh,12px) 10px!important;
+    font-size:clamp(12px,1.9dvh,19px)!important;
+  }
+  .game-bottom{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;
+    align-items:end!important;
+    gap:clamp(10px,2vw,24px)!important;
+    left:calc(env(safe-area-inset-left,0px) + clamp(12px,2.2vw,34px))!important;
+    right:calc(env(safe-area-inset-right,0px) + clamp(12px,2.2vw,34px))!important;
+    bottom:calc(env(safe-area-inset-bottom,0px) + clamp(7px,1.7dvh,18px))!important;
+  }
+  .game-bottom .move-controls{display:contents!important}
+  .game-bottom .move-btn{
+    width:clamp(66px,9.4vw,118px)!important;
+    min-width:0!important;
+    height:clamp(60px,15dvh,92px)!important;
+    min-height:0!important;
+    padding:7px!important;
+    border-radius:clamp(15px,1.8vw,22px)!important;
+    touch-action:none!important;
+  }
+  .game-bottom .move-btn[data-move="-1"]{grid-column:1!important;grid-row:1!important;justify-self:start!important}
+  .game-bottom .move-btn[data-move="1"]{grid-column:3!important;grid-row:1!important;justify-self:end!important}
+  .game-bottom .move-btn b{font-size:clamp(26px,4vw,45px)!important}
+  .game-bottom .move-btn span{display:none!important}
+  .game-bottom .unload-btn{
+    grid-column:2!important;grid-row:1!important;
+    justify-self:center!important;align-self:end!important;
+    width:clamp(145px,22vw,250px)!important;
+    min-width:0!important;
+    min-height:clamp(56px,14dvh,88px)!important;
+    padding:8px 12px!important;
+    border-radius:clamp(13px,1.5vw,22px)!important;
+  }
+  .game-bottom .unload-btn #unloadLabel{font-size:clamp(11px,1.6vw,18px)!important}
+  .game-bottom .unload-btn small{font-size:clamp(8px,.95vw,12px)!important}
+  .game-bottom .lane-controls{display:none!important}
+}
+@media (pointer:coarse) and (orientation:landscape) and (max-height:440px){
+  #menuScreen .brand{max-height:34dvh!important}
+  #menuScreen .brand-logo-image{max-height:34dvh!important}
+  #menuScreen .menu-card{padding:clamp(5px,1.3dvh,10px)!important}
+  #menuScreen .menu-buttons{gap:clamp(3px,.7dvh,6px)!important}
+  #menuScreen .menu-buttons .btn{min-height:clamp(29px,7dvh,38px)!important;padding:3px 8px!important;font-size:clamp(11px,2.9dvh,14px)!important}
+  .game-bottom .move-btn{height:clamp(52px,15dvh,72px)!important;width:clamp(64px,10vw,92px)!important}
+  .game-bottom .unload-btn{min-height:clamp(50px,14dvh,70px)!important}
+}
+
+@media (pointer:coarse) and (orientation:landscape) {
+ #menuScreen .menu-wrap{width:min(96vw,980px)!important;max-width:100%!important;min-height:0!important;height:100%!important;padding:clamp(4px,1dvh,12px) 0!important;gap:clamp(0px,.5dvh,7px)!important;transform:none!important}
+ #menuScreen .brand,#menuScreen .menu-card{width:min(94vw,850px)!important;max-width:94vw!important;flex-shrink:1!important}
+ #menuScreen .brand{height:auto!important;max-height:53dvh!important;display:flex!important;align-items:center!important;justify-content:center!important}
+ #menuScreen .brand-logo-image{display:block!important;width:100%!important;height:auto!important;max-height:53dvh!important;object-fit:contain!important}
+ #menuScreen .menu-card{padding:clamp(6px,1.3dvh,14px)!important}
+ #menuScreen .menu-buttons{grid-template-columns:1fr!important;gap:clamp(3px,.8dvh,8px)!important}
+ #menuScreen .menu-buttons .btn{min-height:clamp(30px,7.4dvh,56px)!important;font-size:clamp(12px,2.7dvh,18px)!important;padding:3px 9px!important}
+ .modal:has(.expedition-guide){width:min(96vw,1100px)!important}
+ .expedition-guide .guide-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:clamp(7px,1.4vw,16px)!important}
+ .expedition-guide .guide-card{padding:clamp(10px,1.5vw,18px)!important;gap:clamp(10px,1.3vw,17px)!important;min-width:0!important;min-height:92px!important}
+ .expedition-guide .guide-art{width:clamp(58px,7vw,90px)!important;height:clamp(58px,7vw,90px)!important;flex-basis:clamp(58px,7vw,90px)!important}
+ .expedition-guide .guide-card h3{font-size:clamp(13px,1.45vw,18px)!important}
+ .expedition-guide .guide-card p{font-size:clamp(11px,1.2vw,14px)!important;overflow-wrap:anywhere}
+ .result-upgrade .victory-emblem{width:min(62vw,350px)!important;max-height:35dvh!important}
+ .result-upgrade .result-action-grid{max-width:min(94%,650px)!important}
+}
+@media (pointer:coarse) and (orientation:landscape) and (max-height:480px){
+ #menuScreen .brand,#menuScreen .brand-logo-image{max-height:51dvh!important}
+ #menuScreen .menu-buttons .btn{min-height:clamp(29px,7.3dvh,38px)!important}
+ #menuScreen .menu-card{padding:clamp(4px,1dvh,9px)!important}
+ .result-upgrade .victory-emblem{width:min(57vw,290px)!important;max-height:30dvh!important}
+ .expedition-guide .guide-card{min-height:72px!important}
+ .expedition-guide .guide-art{width:54px!important;height:54px!important;flex-basis:54px!important}
+}
+@media (pointer:coarse) and (orientation:landscape) and (min-height:550px){
+ .result-upgrade .victory-emblem{max-height:38dvh!important;width:min(62vw,430px)!important}
+}
+.guide-control-art{display:flex!important;gap:4px!important}
+.guide-control-art .guide-symbol{display:grid;place-items:center;font-size:clamp(21px,3vw,32px)!important;line-height:1;width:46%;height:65%;border:1px solid #a3dffb70;border-radius:9px;background:linear-gradient(#2a688c,#102e47);color:#ffe6a1;text-shadow:0 2px 5px #000}
+.expedition-guide .guide-art img{object-fit:contain;padding:3px}
+.expedition-guide .guide-card{overflow:hidden}
+.modal:has(.expedition-guide),.modal:has(.level-atlas),.modal:has(.config-panel){overscroll-behavior:contain}
+@media(max-width:720px) and (orientation:portrait){.expedition-guide .guide-grid{grid-template-columns:1fr}}
+
+/* v0.6.8 — compact, fully visible victory dialog on touch devices */
+@media (pointer:coarse) and (orientation:landscape){
+ #menuScreen .menu-wrap{width:100%!important;max-width:100%!important;align-items:center!important}
+ #menuScreen .brand{width:min(72vw,620px)!important;max-width:min(72vw,620px)!important;margin-inline:auto!important}
+ #menuScreen .brand-logo-image{width:100%!important;max-width:100%!important;object-fit:contain!important}
+ #menuScreen .menu-card{width:min(81vw,700px)!important;max-width:min(81vw,700px)!important;margin-inline:auto!important}
+ .modal-layer:has(.result-upgrade){inset:0!important;padding:clamp(4px,1dvh,10px)!important;overflow:hidden!important;display:flex!important;align-items:center!important;justify-content:center!important}
+ .modal:has(.result-upgrade){box-sizing:border-box!important;width:min(92vw,780px)!important;max-width:92vw!important;max-height:calc(100dvh - 12px)!important;overflow:hidden!important;padding:clamp(8px,1.8dvh,16px)!important;border-radius:clamp(12px,2.5dvh,22px)!important}
+ .result-upgrade{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:clamp(2px,.8dvh,7px)!important;padding:0!important;overflow:hidden!important}
+ .result-upgrade .victory-emblem{display:block!important;flex:0 1 auto!important;width:auto!important;height:clamp(44px,18dvh,130px)!important;max-height:18dvh!important;max-width:48vw!important;object-fit:contain!important;margin:0 auto!important;animation:victoryEnter .65s ease-out both!important}
+ .result-upgrade h2{font-size:clamp(17px,4.7dvh,30px)!important;line-height:1.05!important;margin:0!important}
+ .result-upgrade .result-score{font-size:clamp(24px,7dvh,48px)!important;line-height:1.05!important;margin:0!important}
+ .result-upgrade .result-stats{width:100%!important;gap:clamp(5px,1vw,12px)!important;margin:clamp(2px,.5dvh,5px) 0 0!important}
+ .result-upgrade .result-stats>div{padding:clamp(4px,1dvh,10px)!important;min-width:0!important}
+ .result-upgrade .result-stats b{font-size:clamp(14px,3.5dvh,23px)!important;line-height:1.1!important}
+ .result-upgrade .result-stats span{font-size:clamp(8px,1.6dvh,11px)!important}
+ .result-upgrade .result-action-grid{width:min(100%,600px)!important;max-width:100%!important;gap:clamp(5px,1.1dvh,10px)!important;margin:clamp(2px,.6dvh,6px) auto 0!important}
+ .result-upgrade .result-action-grid .btn{min-height:clamp(29px,7dvh,49px)!important;padding:clamp(3px,.9dvh,8px)!important;font-size:clamp(10px,2.5dvh,15px)!important;line-height:1.1!important}
+ .result-upgrade .victory-rays{display:none!important}
+}
+@media (pointer:coarse) and (orientation:landscape) and (max-height:370px){
+ .modal:has(.result-upgrade){padding:6px 12px!important}
+ .result-upgrade .victory-emblem{height:15dvh!important;max-height:15dvh!important}
+ .result-upgrade h2{font-size:clamp(15px,4.6dvh,22px)!important}
+ .result-upgrade .result-score{font-size:clamp(22px,6.4dvh,34px)!important}
+ .result-upgrade .result-action-grid .btn{min-height:clamp(26px,6.7dvh,35px)!important}
+ #menuScreen .brand{width:min(66vw,520px)!important;max-width:min(66vw,520px)!important}
+ #menuScreen .menu-card{width:min(75vw,590px)!important;max-width:min(75vw,590px)!important}
+}
+
+/* v0.6.9 compact main menu and consolidated pause control */
+.pause-panel{text-align:center;max-width:460px;margin:auto}
+.pause-panel h2{margin:0 0 18px}
+.pause-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pause-actions .btn{width:100%;min-width:0;min-height:50px;margin:0;display:flex;align-items:center;justify-content:center;text-align:center}
+@media(max-width:550px){.pause-actions{gap:8px}.pause-actions .btn{min-height:43px;padding:8px 5px;font-size:12px}}
+@media(pointer:coarse) and (orientation:landscape){
+ #menuScreen .menu-card{width:min(88vw,720px)!important;max-width:88vw!important;padding:clamp(5px,1dvh,12px)!important}
+ #menuScreen .menu-buttons{gap:clamp(2px,.65dvh,6px)!important}
+ #menuScreen .menu-buttons .btn{min-height:clamp(27px,6.4dvh,49px)!important;font-size:clamp(11px,2.4dvh,16px)!important;padding:2px 8px!important}
+ .hud-actions{gap:0!important}
+ .hud-actions .icon-btn{width:clamp(43px,6.8vw,62px)!important;height:clamp(43px,11dvh,58px)!important}
+}
+@media(pointer:coarse) and (orientation:landscape) and (max-height:430px){#menuScreen .menu-buttons .btn{min-height:clamp(25px,6.2dvh,34px)!important}}
+
+/* v0.7.0 — main menu buttons 1.7x more compact; logo unchanged */
+@media (pointer:coarse) and (orientation:landscape){
+ #menuScreen .menu-card{width:min(52vw,520px)!important;max-width:min(52vw,520px)!important;padding:clamp(6px,1.1dvh,11px)!important;margin-inline:auto!important;flex-shrink:0!important}
+ #menuScreen .menu-buttons{grid-template-columns:1fr!important;gap:clamp(3px,.75dvh,7px)!important}
+ #menuScreen .menu-buttons .btn{width:100%!important;min-height:clamp(29px,5.3dvh,38px)!important;padding:3px 8px!important;font-size:clamp(11px,2.4dvh,15px)!important}
+}
+@media (pointer:coarse) and (orientation:landscape) and (max-width:680px){
+ #menuScreen .menu-card{width:min(61vw,430px)!important;max-width:min(61vw,430px)!important}
+}
+@media (pointer:coarse) and (orientation:portrait){
+ #menuScreen .menu-card{width:min(84vw,480px)!important;max-width:min(84vw,480px)!important;margin-inline:auto!important}
+ #menuScreen .menu-buttons .btn{min-height:42px!important;font-size:clamp(12px,3vw,16px)!important}
+}
+
+/* v0.7.1: result dialog stays inside landscape phone viewport */
+@media (pointer:coarse) and (orientation:landscape){
+ #modalLayer.result-visible{position:absolute!important;inset:0!important;padding:clamp(5px,1.5dvh,12px)!important;overflow:hidden!important;align-items:center!important;justify-content:center!important}
+ #modalLayer.result-visible .modal{box-sizing:border-box!important;width:min(96vw,920px)!important;max-width:96vw!important;height:auto!important;max-height:calc(100dvh - 12px)!important;overflow:hidden!important;padding:clamp(8px,1.7dvh,18px)!important;border-radius:clamp(12px,2.5dvh,22px)!important}
+ #modalLayer.result-visible .result-upgrade{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:clamp(2px,.6dvh,7px)!important;padding:0!important;overflow:hidden!important}
+ #modalLayer.result-visible .victory-emblem{width:auto!important;height:clamp(42px,18dvh,105px)!important;max-width:45vw!important;max-height:18dvh!important;flex-shrink:1!important;margin:0 auto!important;animation:none!important}
+ #modalLayer.result-visible .result-upgrade h2{font-size:clamp(16px,4.4dvh,27px)!important;line-height:1.08!important;margin:0!important}
+ #modalLayer.result-visible .result-score{font-size:clamp(23px,7dvh,42px)!important;line-height:1!important;margin:0!important}
+ #modalLayer.result-visible .result-stats{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;width:min(100%,740px)!important;gap:clamp(5px,1vw,12px)!important;margin:clamp(2px,.7dvh,7px) auto!important}
+ #modalLayer.result-visible .result-stats>div{min-width:0!important;padding:clamp(3px,.8dvh,9px)!important}
+ #modalLayer.result-visible .result-stats b{font-size:clamp(13px,3.4dvh,21px)!important;line-height:1.1!important}
+ #modalLayer.result-visible .result-stats span{font-size:clamp(8px,1.8dvh,11px)!important}
+ #modalLayer.result-visible .result-action-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;width:min(100%,740px)!important;gap:clamp(5px,.9dvh,10px)!important;margin:clamp(2px,.8dvh,8px) auto 0!important}
+ #modalLayer.result-visible .result-action-grid .btn{min-height:clamp(29px,7.5dvh,48px)!important;padding:clamp(3px,.8dvh,8px) 7px!important;font-size:clamp(11px,2.5dvh,15px)!important}
+ #modalLayer.result-visible .victory-rays{display:none!important}
+}
+@media (pointer:coarse) and (orientation:landscape) and (max-height:390px){
+ #modalLayer.result-visible .modal{padding:6px 10px!important}
+ #modalLayer.result-visible .victory-emblem{height:13dvh!important;max-height:13dvh!important}
+ #modalLayer.result-visible .result-upgrade{gap:1px!important}
+ #modalLayer.result-visible .result-stats{margin:1px auto!important}
+ #modalLayer.result-visible .result-action-grid{margin:2px auto 0!important;gap:4px!important}
+ #modalLayer.result-visible .result-action-grid .btn{min-height:27px!important}
+}
+
+/* v0.7.2: matching pause control and restrained desktop scale */
+.hud-actions{align-self:stretch;display:flex;align-items:stretch}
+.hud-actions .icon-btn[data-action="pause"]{display:flex;align-items:center;justify-content:center;flex:none;align-self:stretch;height:auto;min-height:100%;padding:0;line-height:1}
+.pause-bars{display:block;position:relative;width:17px;height:23px;background:linear-gradient(90deg,#e7f6ff 0 36%,transparent 36% 64%,#e7f6ff 64% 100%);border-radius:1px;filter:drop-shadow(0 1px 2px #0007)}
+@media (hover:hover) and (pointer:fine){
+ .hud-chip{padding:9.18px 13.26px;min-width:102px}
+ .hud-level{min-width:132.6px}
+ .hud-chip .num{font-size:clamp(16.32px,2.04vw,23.46px)}
+ .hud-chip .cap{font-size:9.18px}
+ .hud-chip .sub{font-size:10.2px}
+ .hud-actions .icon-btn[data-action="pause"]{width:54px;min-width:54px;border-radius:14px}
+ #menuScreen .menu-buttons .btn{font-size:102%;min-height:calc(1em + 27px)}
+}
+@media (pointer:coarse){
+ .hud-actions .icon-btn[data-action="pause"]{height:auto!important;min-height:100%!important;width:clamp(43px,6.8vw,62px)!important}
+ .pause-bars{width:15px;height:21px}
+}
+
+/* v0.7.3: keep victory controls on top and tappable on touch devices */
+#modalLayer.result-visible .result-upgrade{position:relative;isolation:isolate}
+#modalLayer.result-visible .result-action-grid{position:relative;z-index:20;pointer-events:auto!important}
+#modalLayer.result-visible .result-action-grid button{position:relative;z-index:21;pointer-events:auto!important;touch-action:manipulation;cursor:pointer}
+#modalLayer.result-visible .victory-emblem,#modalLayer.result-visible .victory-rays{pointer-events:none}
+
+/* v0.7.4 — closed modal must never render, including when legacy :has() rules apply */
+#modalLayer:not(.show){display:none!important;visibility:hidden!important;pointer-events:none!important}
+#modalLayer.show{visibility:visible;pointer-events:auto}
+/* Tablet menu: 2.1x scale relative to the previous narrow tablet layout,
+   capped to available screen space so no clipping occurs. */
+@media (pointer:coarse) and (min-width:900px) and (min-height:550px){
+ #menuScreen .menu-wrap{width:min(98vw,1100px)!important;max-width:98vw!important;gap:clamp(5px,1.1dvh,14px)!important;justify-content:center!important}
+ #menuScreen .brand{width:min(92vw,900px)!important;max-width:92vw!important;max-height:45dvh!important}
+ #menuScreen .brand-logo-image{width:100%!important;max-height:45dvh!important;object-fit:contain!important}
+ #menuScreen .menu-card{width:min(92vw,920px)!important;max-width:92vw!important;padding:clamp(10px,1.8dvh,22px)!important}
+ #menuScreen .menu-buttons{grid-template-columns:1fr!important;gap:clamp(6px,1.1dvh,13px)!important}
+ #menuScreen .menu-buttons .btn{min-height:clamp(43px,6.5dvh,72px)!important;font-size:clamp(15px,2.1dvh,22px)!important;padding:clamp(7px,1.2dvh,14px)!important}
+}
+@media (pointer:coarse) and (min-width:900px) and (min-height:550px) and (max-height:720px){
+ #menuScreen .brand,#menuScreen .brand-logo-image{max-height:38dvh!important}
+ #menuScreen .menu-buttons .btn{min-height:clamp(36px,6dvh,51px)!important}
+ #menuScreen .menu-card{padding:clamp(6px,1dvh,12px)!important}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <section id="menuScreen" class="screen active">
+    <div class="menu-wrap">
+      <div class="brand">
+        <h1 class="visually-hidden">Кристальная шахта</h1>
+        <img class="brand-logo-image" src="assets/crystal-mine-logo.png" alt="Кристальная шахта — В глубине рождаются легенды" decoding="async">
+      </div>
+      <div class="menu-card">
+        
+        <div class="menu-buttons">
+          <button class="btn primary" data-action="play"><span class="ico">⛏</span> Начать экспедицию</button>
+          <button class="btn" data-action="levels"><span class="ico">▦</span> Уровни</button>
+          <button class="btn" data-action="rules"><span class="ico">ⓘ</span> Правила</button>
+          <button class="btn" data-action="settings"><span class="ico">⚙</span> Настройки</button>
+          <button class="btn ghost" data-action="about"><span class="ico">✦</span> Об игре</button>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <section id="gameScreen" class="screen">
+    <canvas id="gameCanvas" width="1280" height="720" aria-label="Игровая сцена Кристальная шахта"></canvas>
+    <div class="game-shade"></div>
+    <div class="hud">
+      <div class="hud-group">
+        <div class="hud-chip hud-level"><div class="cap">Уровень <span id="hudLevel">01</span></div><div class="num" id="hudLevelName">Первые кристаллы</div><div class="hud-progress"><i id="hudProgress"></i></div></div>
+        <div class="hud-chip"><div class="cap">Прогресс цели</div><div class="num" id="hudScore">0</div><div class="sub">из <span id="hudTarget">90</span> <span id="hudTargetUnit">✦</span></div></div>
+      </div>
+      <div class="hud-group">
+        <div class="hud-chip hud-lives"><div class="cap">Жизни</div><div class="num" id="hudLives">◆ ◆ ◆</div><div class="sub">опасности</div></div>
+        <div class="hud-chip"><div class="cap">Груз</div><div class="num"><span id="hudMass">0</span>/<span id="hudCapacity">10</span></div><div class="sub" id="hudCargoValue">0 ✦ в вагонетке</div></div>
+        <div class="hud-chip"><div class="cap">Время</div><div class="num" id="hudTime">45</div><div class="sub" id="hudMissed">Промахи: 0</div></div>
+        <div class="hud-actions"><button class="icon-btn" data-action="pause" aria-label="Пауза и меню"><span class="pause-bars" aria-hidden="true"></span></button></div>
+      </div>
+    </div>
+    <div class="level-intro" id="levelIntro" hidden>
+      <div class="intro-card">
+        <div class="intro-emblem">✦</div>
+        <div class="intro-kicker" id="introKicker">ПОДГОТОВКА ЭКСПЕДИЦИИ</div>
+        <h2 id="introTitle">Новая механика</h2>
+        <p id="introText"></p>
+        <div class="intro-loading"><i id="introProgress"></i></div>
+        <div class="intro-footer"><span>ШАХТНЫЙ УРОВЕНЬ <b id="introLevel">01</b></span><button class="btn primary small" data-action="start-level-now">В ШАХТУ <span>→</span></button></div>
+      </div>
+    </div>
+    <div class="toast" id="toast"></div>
+    <div class="game-bottom">
+      <div class="lane-controls">
+        <button class="lane-btn" id="laneRear" data-action="lane-rear" aria-label="Перейти на дальний рельс"><b>↑</b><span>НАЗАД<br>ДАЛЬНИЙ</span></button>
+        <button class="lane-btn" id="laneFront" data-action="lane-front" aria-label="Перейти на ближний рельс"><b>↓</b><span>ВПЕРЁД<br>БЛИЖНИЙ</span></button>
+      </div>
+      <div class="move-controls" aria-label="Управление вагонеткой">
+        <button class="move-btn" data-move="-1" aria-label="Двигаться влево"><b>◀</b><span>ВЛЕВО</span></button>
+        <button class="move-btn" data-move="1" aria-label="Двигаться вправо"><b>▶</b><span>ВПРАВО</span></button>
+      </div>
+      <button class="unload-btn" id="unloadBtn" data-action="unload" aria-label="Сдать собранные кристаллы"><span id="unloadLabel">СДАТЬ КРИСТАЛЛЫ</span><small id="unloadTimer">ГОТОВО ЧЕРЕЗ 5 СЕК.</small></button>
+    </div>
+  </section>
+
+  <div class="modal-layer" id="modalLayer"><div class="modal" id="modalContent"></div></div>
+  <div id="rotateGate"><div class="rotate-inner"><span class="rotate-icon">📱</span><h2>Поверните устройство</h2><p>«Кристальная шахта» рассчитана на горизонтальный экран. Поверните телефон, чтобы продолжить экспедицию.</p></div></div>
+</div>
+<div id="assetLoading" hidden role="status" aria-live="polite"><div class="asset-loading-card"><div class="asset-loading-gem">◆</div><strong>Подготовка шахты</strong><span>Загружаем графику заранее</span><small id="assetLoadingProgress">0 / 0</small></div></div>
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const W = 1280, H = 720;
+const canvas = $('#gameCanvas'), ctx = canvas.getContext('2d',{alpha:false});
+const gameBg = new Image(), menuBg = new Image();
+let cachedGameBackground=null;
+function prepareGameBackground(){if(!gameBg.naturalWidth)return;const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d',{alpha:false});const scale=Math.max(W/gameBg.naturalWidth,H/gameBg.naturalHeight);const w=gameBg.naturalWidth*scale,h=gameBg.naturalHeight*scale;x.drawImage(gameBg,(W-w)/2,(H-h)/2,w,h);cachedGameBackground=c;}
+gameBg.src = 'assets/mine-game.webp'; menuBg.src = 'assets/mine-menu.webp';
+const GEM_SPRITE_FILES = {quartz:'assets/sprites/quartz.png', ruby:'assets/sprites/ruby.png', emerald:'assets/sprites/emerald.png', sapphire:'assets/sprites/sapphire.png', amethyst:'assets/sprites/amethyst.png', diamond:'assets/sprites/diamond.png', gold:'assets/sprites/gold.png', rock:'assets/sprites/rock.png'};
+const gemSprites = {};
+for(const [id,src] of Object.entries(GEM_SPRITE_FILES)){ const img = new Image(); img.src = src; gemSprites[id] = img; }
+
+const IMAGE_ASSET_URLS = [
+ 'assets/mine-game.webp','assets/mine-menu.webp','assets/mine-menu-animated.gif',
+ 'assets/crystal-mine-logo.png','assets/victory-emblem.png',
+ 'assets/levels-cavern.webp','assets/rules-cavern.webp',
+ ...Object.values(GEM_SPRITE_FILES)
+];
+const assetCache = new Map();
+const assetLoadStatus = {done:0,total:IMAGE_ASSET_URLS.length,failed:[]};
+let assetPreloadPromise = null;
+function preloadImages(){
+ if(assetPreloadPromise)return assetPreloadPromise;
+ assetPreloadPromise=Promise.all(IMAGE_ASSET_URLS.map(async src=>{
+  let img;
+  if(src==='assets/mine-game.webp')img=gameBg;
+  else if(src==='assets/mine-menu.webp')img=menuBg;
+  else img=Object.entries(GEM_SPRITE_FILES).reduce((found,[id,path])=>found||(path===src?gemSprites[id]:null),null)||new Image();
+  assetCache.set(src,img);
+  if(!img.src)img.src=src;
+  try{
+   if(!img.complete)await new Promise((resolve,reject)=>{
+    img.addEventListener('load',resolve,{once:true});
+    img.addEventListener('error',reject,{once:true});
+   });
+   if(!img.naturalWidth)throw Error('Image not available');
+   if(typeof img.decode==='function')await img.decode();
+  }catch(e){assetLoadStatus.failed.push(src);console.warn('Asset preload:',src,e);}
+  finally{assetLoadStatus.done++;}
+ })).then(()=>{
+  prepareGameBackground();
+  try{
+   const warm=document.createElement('canvas');warm.width=64;warm.height=64;
+   const wc=warm.getContext('2d',{alpha:true});
+   for(const img of Object.values(gemSprites))if(img.naturalWidth){wc.clearRect(0,0,64,64);wc.drawImage(img,0,0,64,64);}
+  }catch(e){console.warn('Texture warmup:',e);}
+ });
+ return assetPreloadPromise;
+}
+let pendingLevelStart=0;
+async function startGamePreloaded(level=0){
+ const request=++pendingLevelStart;
+ const screen=document.getElementById('assetLoading');
+ const progress=document.getElementById('assetLoadingProgress');
+ if(assetLoadStatus.done<assetLoadStatus.total){
+  screen.hidden=false;
+  progress.textContent=`${assetLoadStatus.done} / ${assetLoadStatus.total}`;
+ }
+ try{
+  await preloadImages();
+  if(request!==pendingLevelStart)return;
+  startGameReady(level);
+ }finally{
+  if(request===pendingLevelStart)screen.hidden=true;
+ }
+}
+preloadImages(); // Start immediately on page load, not on first level.
+
+const RAIL_Y = [515, 606];
+const LANE_GLOW = ['#ff5268','#4dbdff']; // дальний рельс — красный, ближний — синий
+const GEM_TYPES = [
+  {id:'quartz',name:'Кварц',value:10,weight:1,color:'#62eaff',dark:'#148bb9',sides:6,sprite:'quartz'},
+  {id:'ruby',name:'Рубин',value:25,weight:2,color:'#ff667c',dark:'#a91e49',sides:6,sprite:'ruby'},
+  {id:'emerald',name:'Изумруд',value:35,weight:2,color:'#5bffc0',dark:'#07865c',sides:6,sprite:'emerald'},
+  {id:'sapphire',name:'Сапфир',value:50,weight:3,color:'#66a8ff',dark:'#2850b6',sides:7,sprite:'sapphire'},
+  {id:'amethyst',name:'Аметист',value:75,weight:3,color:'#d18bff',dark:'#7436ae',sides:6,sprite:'amethyst'},
+  {id:'diamond',name:'Алмаз',value:150,weight:4,color:'#f2fbff',dark:'#7acbe9',sides:8,sprite:'diamond'},
+  {id:'gold',name:'Золотой кристалл',value:250,weight:3,color:'#ffe18a',dark:'#bd7418',sides:7,sprite:'gold'},
+  {id:'rock',name:'Взрывная порода',value:0,weight:0,color:'#9b8a86',dark:'#302d38',sides:7,hazard:true,sprite:'rock'}
+];
+const GAME_VERSION = '0.7.4';
+const GAME_AUTHOR = 'Олег Боженов';
+function buildLevels(){
+ const training = [
+  {name:'Первый самоцвет',objective:{type:'score',target:90},time:48,interval:1.62,fall:205,cart:112,kinds:1,lanes:1,capacity:10,tutorial:'Управляй вагонеткой клавишами A / D или стрелками. Совмещай кузов с падающими кристаллами и набери первые 90 очков.',title:'Механика 1 · Управление и ловля'},
+  {name:'Два пути',objective:{type:'score',target:150},time:52,interval:1.48,fall:220,cart:118,kinds:2,lanes:2,capacity:10,tutorial:'Теперь доступны два рельса. W — дальний путь с красным свечением, S — ближний с синим. Выбирай правильную дорожку перед ловлей.',title:'Механика 2 · Переключение рельсов'},
+  {name:'Цвет и ценность',objective:{type:'score',target:220},time:56,interval:1.34,fall:238,cart:125,kinds:4,lanes:2,capacity:10,tutorial:'У каждого самоцвета своя стоимость и масса. Более редкие кристаллы приносят больше очков, но быстрее заполняют кузов.',title:'Механика 3 · Стоимость самоцветов'},
+  {name:'Дюжина находок',objective:{type:'count',target:12},time:58,interval:1.25,fall:245,cart:130,kinds:4,lanes:2,capacity:12,tutorial:'В этом испытании важны не очки, а количество находок. Поймай 12 любых обычных кристаллов. Опасная порода в счёт не идёт.',title:'Механика 4 · Цель по количеству'},
+  {name:'Полная вагонетка',objective:{type:'score',target:320},time:60,interval:1.18,fall:255,cart:136,kinds:5,lanes:2,capacity:9,tutorial:'Следи за массой груза. При перегрузе камни будут вываливаться. Разгружай добычу кнопкой — теперь она готова каждые пять секунд.',title:'Механика 5 · Масса и разгрузка'},
+  {name:'Зелёная жила',objective:{type:'color',color:'emerald',target:7,penalty:18},time:62,interval:1.12,fall:265,cart:142,kinds:5,lanes:2,capacity:11,tutorial:'Задача изменилась: нужно собрать 7 изумрудов. Другие кристаллы поймать можно, но за каждый неподходящий цвет снимаются очки.',title:'Механика 6 · Сбор заданного цвета'},
+  {name:'Острые тени',objective:{type:'count',target:15},time:64,interval:1.06,fall:278,cart:148,kinds:5,lanes:2,capacity:11,spikeInterval:7.4,tutorial:'С потолка начали падать сталактиты. Красное предупреждение показывает место удара. У тебя три жизни — уворачивайся движением и сменой рельса.',title:'Механика 7 · Сталактиты и жизни'},
+  {name:'Взрывная порода',objective:{type:'score',target:520},time:66,interval:1.00,fall:290,cart:154,kinds:6,lanes:2,capacity:12,spikeInterval:6.8,hazardChance:.10,tutorial:'Тёмные раскалённые глыбы — взрывная порода. Не лови её: она выбивает часть груза из вагонетки. Продолжай собирать обычные самоцветы.',title:'Механика 8 · Опасная руда'},
+  {name:'Двадцать самоцветов',objective:{type:'count',target:20},time:70,interval:.94,fall:302,cart:160,kinds:6,lanes:2,capacity:13,spikeInterval:6.2,hazardChance:.10,doubleChance:.16,tutorial:'Потоки ускорились, иногда одновременно падают два камня. Для победы нужно поймать 20 обычных самоцветов, независимо от их стоимости.',title:'Механика 9 · Ускоренный поток'},
+  {name:'Сердце шахты',objective:{type:'score',target:720},time:72,interval:.88,fall:315,cart:168,kinds:7,lanes:2,capacity:13,spikeInterval:5.8,hazardChance:.12,doubleChance:.2,tutorial:'Финальная тренировка объединяет все механики: два рельса, редкие камни, разгрузку, опасную породу и камнепад. Набери 720 очков.',title:'Механика 10 · Полная экспедиция'}
+ ];
+ const sectors = ['Синий разлом','Забытая жила','Кристальный мост','Ржавый штрек','Гулкие глубины','Лунный пласт','Сердце гранита','Золотой уступ','Туманный тоннель','Старая шахта','Подземный каскад','Геодный зал','Глубокий горизонт','Пещера эха','Северный забой','Чёрный уступ','Светящийся пласт','Драконья жила','Медный коридор','Ледяная полость','Зал самоцветов','Рубиновый склон','Изумрудный колодец','Алмазный уступ','Сапфировая трещина','Аметистовый грот','Пылающий пласт','Каменный лабиринт','Нижний горизонт','Последний забой'];
+ const colorTypes = ['emerald','ruby','sapphire','amethyst','quartz','diamond','gold'];
+ const colorNames = {emerald:'изумруды',ruby:'рубины',sapphire:'сапфиры',amethyst:'аметисты',quartz:'кварц',diamond:'алмазы',gold:'золотые кристаллы'};
+ const arcade=[];
+ for(let j=1;j<=90;j++){
+  const d=j/90, idx=j-1, pattern=idx%6;
+  let objective;
+  if(pattern===0||pattern===3){objective={type:'score',target:Math.round(780+d*3400+(j%4)*95)};}
+  else if(pattern===1||pattern===4){objective={type:'count',target:14+Math.round(d*22)+(j%3)};}
+  else {const color=colorTypes[Math.floor(idx/2)%colorTypes.length];objective={type:'color',color,target:7+Math.round(d*15)+(j%3),penalty:18+Math.round(d*22)};}
+  const interval=Math.max(.46,1.12-d*.55);
+  const time=Math.round(66+d*27);
+  const spike=(j>=5 && j%3!==1)?Math.max(2.7,6.7-d*3.5):0;
+  const kinds=Math.min(7,4+Math.floor(d*3));
+  const sector=sectors[idx%sectors.length];
+  const round=Math.floor(idx/sectors.length)+1;
+  let tutorial;
+  if(objective.type==='score') tutorial=`Цель экспедиции — набрать ${objective.target.toLocaleString('ru-RU')} очков. Выбирай ценные камни, следи за массой и не теряй темп.`;
+  else if(objective.type==='count') tutorial=`Для победы нужно поймать ${objective.target} любых обычных самоцветов. Стоимость камней не важна — важен точный приём.`;
+  else tutorial=`Собери ${objective.target} шт.: ${colorNames[objective.color]}. За каждый самоцвет другого цвета снимается ${objective.penalty} очков. Следи за оттенком кристалла.`;
+  arcade.push({name:`${sector} · ${round}`,objective,time,interval,fall:300+d*220,cart:155+d*92,kinds,lanes:2,capacity:11+Math.floor(d*4),spikeInterval:spike||undefined,hazardChance:.08+d*.12,doubleChance:.12+d*.32,tutorial,title:objective.type==='score'?'Аркада · Набор очков':objective.type==='count'?'Аркада · Количество находок':`Аркада · ${colorNames[objective.color]}`});
+ }
+ return training.concat(arcade);
+}
+const LEVELS = buildLevels();
+const defaultSettings = {sound:true,particles:true,shake:true,volume:70,particleDensity:'normal',reducedMotion:false,showMisses:true,swipeSensitivity:55};
+let settings = {...defaultSettings};
+try { settings = {...defaultSettings,...JSON.parse(localStorage.getItem('crystalMineSettings')||'{}')}; } catch(e){}
+let progress = {cleared:[],best:{}};
+try { progress = {...progress,...JSON.parse(localStorage.getItem('crystalMineProgressV040')||'{}')}; } catch(e){}
+let frameQuality=1,hudAccumulator=0;let state = null, raf = 0, lastFrame = 0, ambient = [], particles = [], gems = [], spills = [], toastTimer = 0, audioCtx = null;
+let currentScreen = 'menu';
+
+function saveSettings(){localStorage.setItem('crystalMineSettings',JSON.stringify(settings));}
+function saveProgress(){localStorage.setItem('crystalMineProgressV040',JSON.stringify(progress));}
+function showScreen(name){currentScreen=name; $('#menuScreen').classList.toggle('active',name==='menu'); $('#gameScreen').classList.toggle('active',name==='game');}
+function fmt(n){return Math.max(0,Math.floor(n)).toLocaleString('ru-RU');}
+const GEM_LABELS={quartz:'кварца',ruby:'рубинов',emerald:'изумрудов',sapphire:'сапфиров',amethyst:'аметистов',diamond:'алмазов',gold:'золотых кристаллов'};
+function objectiveProgress(){if(!state)return 0;const o=LEVELS[state.level].objective;if(o.type==='score')return state.score;if(o.type==='count')return state.caught;return state.caughtByType[o.color]||0;}
+function objectiveUnit(){const o=LEVELS[state.level].objective;if(o.type==='score')return '✦';if(o.type==='count')return 'камней';return GEM_LABELS[o.color]||'камней';}
+function objectiveComplete(){const o=LEVELS[state.level].objective;return objectiveProgress()>=o.target;}
+function objectiveTitle(o){if(o.type==='score')return 'очков';if(o.type==='count')return 'самоцветов';return GEM_LABELS[o.color]||'самоцветов';}
+function isLevelUnlocked(i){return i===0||progress.cleared.includes(i-1);}
+function beep(freq=540,duration=.08,type='sine'){
+ if(!settings.sound)return;
+ try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(.0001,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.07*(settings.volume/100),audioCtx.currentTime+.012);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+duration);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+duration+.02);}catch(e){}
+}
+function showToast(text){const el=$('#toast');el.textContent=text;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),1450);}
+function openModal(html){$('#modalContent').innerHTML=html;$('#modalLayer').classList.toggle('result-visible',html.includes('result-upgrade'));$('#modalLayer').classList.add('show');$('#modalLayer').setAttribute('aria-hidden','false');}
+function closeModal(){const layer=$('#modalLayer');layer.classList.remove('show','result-visible');layer.setAttribute('aria-hidden','true');$('#modalContent').replaceChildren();}
+function settingsModal(){
+ const toggle=(key,title,desc,ico)=>`<div class="config-item"><div class="config-icon">${ico}</div><div class="config-copy"><b>${title}</b><small>${desc}</small></div><button class="toggle ${settings[key]?'on':''}" data-action="setting-toggle" data-key="${key}" role="switch" aria-checked="${!!settings[key]}" aria-label="${title}"><i></i></button></div>`;
+ openModal(`<div class="config-panel">
+ <div class="config-eyebrow">✦ ПАРАМЕТРЫ ЭКСПЕДИЦИИ</div><div class="config-header"><div><h2>Настройки</h2><p>Настрой игру под свой стиль. Изменения сохраняются автоматически.</p></div><img src="assets/sprites/diamond.png" alt=""></div>
+ <div class="config-section"><h3>♫ ЗВУК</h3>${toggle('sound','Звуковые эффекты','Сигналы сбора, опасностей и разгрузки','♫')}
+ <div class="config-item"><div class="config-icon">◖</div><div class="config-copy"><b>Громкость эффектов</b><small>Уровень звука игровых сигналов</small></div><div class="config-slider"><input type="range" min="0" max="100" step="5" value="${settings.volume}" data-setting-range="volume" aria-label="Громкость"><output>${settings.volume}%</output></div></div></div>
+ <div class="config-section"><h3>✧ ГРАФИКА И ЭФФЕКТЫ</h3>${toggle('particles','Частицы и свечение','Искры, пыль и световые эффекты','✧')}
+ <div class="config-item"><div class="config-icon">✦</div><div class="config-copy"><b>Количество частиц</b><small>Меньше частиц — выше производительность</small></div><select data-setting-select="particleDensity" aria-label="Количество частиц"><option value="low" ${settings.particleDensity==='low'?'selected':''}>Низкое</option><option value="normal" ${settings.particleDensity==='normal'?'selected':''}>Обычное</option><option value="high" ${settings.particleDensity==='high'?'selected':''}>Высокое</option></select></div>
+ ${toggle('shake','Тряска вагонетки','Визуальный отклик при ударах и перегрузе','⌁')}
+ ${toggle('reducedMotion','Уменьшить движение','Отключить тряску и снизить интенсивность эффектов','◉')}</div>
+ <div class="config-section"><h3>⚙ ИНТЕРФЕЙС И УПРАВЛЕНИЕ</h3>${toggle('showMisses','Показывать промахи','Счётчик пропущенных кристаллов на экране','◎')}
+ <div class="config-item"><div class="config-icon">↕</div><div class="config-copy"><b>Чувствительность свайпа</b><small>Длина жеста для переключения рельса на телефоне</small></div><select data-setting-select="swipeSensitivity" aria-label="Чувствительность свайпа"><option value="30" ${settings.swipeSensitivity===30?'selected':''}>Высокая</option><option value="55" ${settings.swipeSensitivity===55?'selected':''}>Обычная</option><option value="85" ${settings.swipeSensitivity===85?'selected':''}>Низкая</option></select></div></div>
+ <div class="config-bottom"><button class="btn ghost" data-action="reset-settings">СБРОСИТЬ НАСТРОЙКИ</button><button class="btn primary" data-action="close-modal">ГОТОВО ✓</button></div>
+ </div>`);
+}
+function levelsModal(){
+ const gems=['quartz','ruby','emerald','sapphire','amethyst','diamond','gold'];
+ const makeCards=(from,to)=>LEVELS.slice(from,to).map((l,k)=>{
+  const i=from+k,unlocked=isLevelUnlocked(i),done=progress.cleared.includes(i),best=progress.best[i];
+  const state=done?'completed':unlocked?'available':'locked';
+  const art=unlocked?`<img src="assets/sprites/${gems[i%gems.length]}.png" alt="">`:'<span class="lock-symbol">◆</span>';
+  const label=done?'★ ПРОЙДЕН':!unlocked?'ЗАКРЫТ':best?'Рекорд '+fmt(best):'ИГРАТЬ';
+  return `<button class="level-card ${state}" data-action="start-level" data-level="${i}" ${unlocked?'':'disabled'} aria-label="Уровень ${i+1}: ${l.name}. ${label}"><div class="level-art">${art}</div><div class="n">${String(i+1).padStart(2,'0')}</div><div class="name">${l.name}</div><div class="best">${label}</div></button>`;
+ }).join('');
+ const done=progress.cleared.length;
+ openModal(`<div class="level-atlas">
+ <div class="atlas-top"><div><div class="atlas-kicker">✦ КАРТА ЭКСПЕДИЦИЙ</div><h2>Выбор уровня</h2><p class="atlas-intro">100 шахтёрских испытаний: 10 обучающих и 90 аркадных. Открывай новые маршруты и собирай редкие самоцветы.</p></div>
+ <div class="atlas-progress"><strong>${done}<span style="font-size:14px;color:#9cb4c7"> / 100</span></strong><small>ПРОЙДЕНО УРОВНЕЙ</small><div class="atlas-meter"><i style="width:${done}%"></i></div></div></div>
+ <div class="atlas-chapter"><span class="chapter-icon">✦</span> ОБУЧЕНИЕ · 01–10</div><div class="level-grid">${makeCards(0,10)}</div>
+ <div class="atlas-chapter"><span class="chapter-icon">◆</span> АРКАДА · 11–100</div><div class="level-grid">${makeCards(10,100)}</div>
+ <div class="atlas-actions"><button class="btn ghost" data-action="close-modal">НАЗАД</button></div>
+ </div>`);
+}
+function rulesModal(){openModal(`<div class="expedition-guide">
+ <div class="guide-kicker">✦ Полевой справочник шахтёра</div>
+ <h2>Правила экспедиции</h2>
+ <p class="guide-subtitle">Поймай драгоценные камни, сохрани груз и выполни цель уровня. Каждая экспедиция требует точности и реакции.</p>
+ <div class="guide-grid">
+ <article class="guide-card feature"><div class="guide-art guide-control-art"><span class="guide-symbol">◀</span><span class="guide-symbol">▶</span></div><div><h3>Управляй вагонеткой</h3><p><strong>Телефон:</strong> удерживай ◀ и ▶ по краям экрана. <strong>ПК:</strong> A / D или ← / →. Учитывай инерцию.</p></div></article>
+ <article class="guide-card feature"><div class="guide-art guide-control-art"><span class="guide-symbol">↑</span><span class="guide-symbol">↓</span></div><div><h3>Меняй рельсы</h3><p><strong>Телефон:</strong> свайп вверх — дальний рельс, вниз — ближний. <strong>ПК:</strong> W / S или ↑ / ↓.</p></div></article>
+ <article class="guide-card"><div class="guide-art"><img src="assets/sprites/diamond.png" alt=""></div><div><h3>Лови самоцветы</h3><p>Подставляй открытый кузов под падающие кристаллы. Упавший на землю камень уже не собрать.</p></div></article>
+ <article class="guide-card"><div class="guide-art"><img src="assets/sprites/emerald.png" alt=""></div><div><h3>Выполняй задания</h3><p>Набирай очки, собирай нужное количество камней или охоться за <strong>заданным цветом</strong>. За лишние цвета возможен штраф.</p></div></article>
+ <article class="guide-card"><div class="guide-art"><img src="assets/sprites/gold.png" alt=""></div><div><h3>Следи за грузом</h3><p>У кристаллов разная ценность и масса. При перегрузе добыча выпадает из вагонетки.</p></div></article>
+ <article class="guide-card"><div class="guide-art"><span class="guide-symbol">⏱</span></div><div><h3>Разгружай добычу</h3><p>Раз в <strong>5 секунд</strong> нажимай центральную кнопку разгрузки. Груз отправится в хранилище.</p></div></article>
+ <article class="guide-card"><div class="guide-art"><img src="assets/sprites/rock.png" alt=""></div><div><h3>Берегись камнепада</h3><p>С шестого уровня появляются падающие сталактиты. Следи за предупреждением: <strong>три удара</strong> завершают попытку.</p></div></article>
+ <article class="guide-card"><div class="guide-art"><img src="assets/sprites/ruby.png" alt=""></div><div><h3>Покори все 100 уровней</h3><p>Первые 10 — обучение, остальные 90 — аркадные испытания. <strong>P / Esc</strong> — пауза, <strong>E / Пробел</strong> — разгрузка на ПК.</p></div></article>
+ </div>
+ <div class="guide-footer"><button class="btn gold" data-action="close-modal">ПОНЯТНО ✓</button></div>
+ </div>`);}
+function aboutModal(){openModal(`<h2>Об игре</h2><p class="modal-lead">Кристальная шахта — аркадное приключение о добыче драгоценных камней в глубинах механической шахты.</p><div class="rule-list"><div class="rule"><div class="rule-icon">✦</div><p><b>Версия игры ${GAME_VERSION}</b>100 уровней: 10 обучающих и 90 аркадных испытаний с разными целями — набрать очки, поймать заданное количество или собрать кристаллы определённого цвета. Управление вагонеткой на двух рельсах, физика кристаллов, опасные сталактиты и система жизней.</p></div><div class="rule"><div class="rule-icon">✍</div><p><b>Создатель игры</b>${GAME_AUTHOR}</p></div><div class="rule"><div class="rule-icon">▧</div><p><b>Управление и сохранения</b>Рекорды и настройки сохраняются локально в браузере. Для игры не требуется подключение к серверу.</p></div></div><div class="modal-actions"><button class="btn primary" data-action="close-modal">Закрыть</button></div>`);}
+let settingsFromPause=false;
+function pauseModal(){if(!state)return;state.paused=true;state.moveDir=0;state.cartVX=0;settingsFromPause=false;openModal(`<div class="pause-panel"><h2>Пауза</h2><div class="pause-actions"><button class="btn primary" data-action="resume">▶ Продолжить</button><button class="btn" data-action="pause-settings">⚙ Настройки</button><button class="btn" data-action="restart">↻ Заново</button><button class="btn ghost" data-action="exit">⌂ В меню</button></div></div>`);}
+function resultModal(won){const score=state?state.score:0;const l=LEVELS[state.level],o=l.objective,prog=objectiveProgress(),unit=objectiveUnit();const goal=`Цель: ${fmt(o.target)} ${objectiveTitle(o)}`;const last=state.level===LEVELS.length-1;openModal(`<div class="result-upgrade ${won?'is-victory':'is-defeat'}">${won?'<div class="victory-rays"></div><img class="victory-emblem" src="assets/victory-emblem.png" alt="Знак победы">':''}<h2>${won?(last?'Экспедиция завершена!':'Уровень пройден!'):'Экспедиция завершена'}</h2><div class="result-score">${fmt(score)} ✦</div><div class="result-stats"><div><b>${fmt(state.banked)}</b><span>Сдано</span></div><div><b>${state.caught}</b><span>Поймано</span></div><div><b>${state.missed}</b><span>Промахи</span></div></div><div class="result-action-grid ${won&&!last?'has-next':'no-next'}"><button class="btn primary" data-action="restart">↻ Повторить</button>${won&&!last?'<button class="btn gold" data-action="next-level">Следующий уровень →</button>':''}<button class="btn" data-action="levels">Уровни</button><button class="btn ghost" data-action="exit">В меню</button></div></div>`);}
+function startGame(level=0){return startGamePreloaded(level);}
+function startGameReady(level=0,skipIntro=false){closeModal();level=Math.max(0,Math.min(LEVELS.length-1,level));const l=LEVELS[level];state={level,elapsed:0,timeLeft:l.time,score:0,banked:0,cargoValue:0,cargoMass:0,capacity:l.capacity||10,cargo:[],caught:0,caughtByType:{},penaltyPoints:0,missed:0,lives:3,activeLane:1,cartX:640,cartVX:0,moveDir:0,cartSpeed:565,cartAccel:2350,cartFriction:2750,cartMin:100,cartMax:1180,laneVisual:1,laneFrom:1,laneTo:1,laneT:1,spawnTimer:.58,unloadCooldown:5,paused:false,over:false,combo:0,lastCatch:-99,shake:0,levelWon:false,stalagmites:[],spikeTimer:l.spikeInterval?2.2:999,invuln:0,introActive:!skipIntro,introRemaining:skipIntro?0:4.5};gems=[];spills=[];particles=[];lastFrame=performance.now();showScreen('game');initCanvas();updateHUD();if(skipIntro){$('#levelIntro').hidden=true;}else{showLevelIntro(l.title||'Подготовка уровня',l.tutorial||'Осмотрись: самоцветы падают на двух рельсах. Перемещай вагонетку по горизонтали и выбирай правильный путь.');}cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);}
+function showLevelIntro(title,text){$('#introKicker').textContent=state.level<10?'ОБУЧЕНИЕ · НОВАЯ МЕХАНИКА':'АРКАДНОЕ ИСПЫТАНИЕ · НОВАЯ ЭКСПЕДИЦИЯ';$('#introTitle').textContent=title;$('#introText').textContent=text;$('#introLevel').textContent=String(state.level+1).padStart(2,'0');$('#introProgress').style.animation='none';void $('#introProgress').offsetWidth;$('#introProgress').style.animation='introLoad 4.5s linear forwards';$('#levelIntro').hidden=false;}
+function beginLevelPlay(){if(!state||!state.introActive)return;state.introActive=false;state.introRemaining=0;$('#levelIntro').hidden=true;lastFrame=performance.now();}
+function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
+function setMoveDir(dir){if(!state||state.paused||state.over||currentScreen!=='game')return;state.moveDir=dir;}
+function stopMove(){if(state)state.moveDir=0;}
+function switchLane(lane){if(!state||state.paused||state.over||lane===state.activeLane)return;if(LEVELS[state.level].lanes===1&&lane===0){showToast('Дальний рельс откроется на следующем уровне');return;}state.activeLane=lane;state.laneFrom=state.laneVisual;state.laneTo=lane;state.laneT=0;beep(lane===0?620:480,.055,'triangle');updateLaneButtons();}
+function updateLaneButtons(){$('#laneRear').classList.toggle('active',state&&state.activeLane===0);$('#laneFront').classList.toggle('active',state&&state.activeLane===1);$('#laneRear').disabled=!!(state&&LEVELS[state.level].lanes===1);}
+function spawnGem(laneOverride=null){const l=LEVELS[state.level];let lane=laneOverride===null?(l.lanes===1?1:Math.random()<.5?0:1):laneOverride;let kind;
+ if(l.objective.type==='color'&&Math.random()<.48){kind=GEM_TYPES.find(g=>g.id===l.objective.color)||GEM_TYPES[2];}
+ else if(Math.random()<(l.hazardChance??(state.level>=6?.085:0)))kind=GEM_TYPES[7];
+ else if(state.level>=9&&Math.random()<.07)kind=GEM_TYPES[6];
+ else {const pool=GEM_TYPES.slice(0,l.kinds);kind=pool[Math.floor(Math.random()*pool.length)];}
+ const r=kind.hazard?21:17+Math.random()*4;
+ const spread=state.level<2?430:650;
+ const x=clamp(state.cartX+(Math.random()-.5)*spread,70,W-70);
+ const laneGlow=LANE_GLOW[lane];
+ gems.push({x,y:86-Math.random()*34,lane,type:kind,laneGlow,r,mass:Math.max(.8,kind.weight||1),vx:(Math.random()-.5)*72,vy:l.fall*(.42+Math.random()*.10),gravity:560,rot:Math.random()*6.28,spin:(Math.random()-.5)*2.4,life:4.2,bounced:false,grounded:false,countedMiss:false,alive:true});
+}
+function spawnStalagmite(){const l=LEVELS[state.level];if(!l.spikeInterval)return;const lane=l.lanes===1?1:(Math.random()<.5?0:1);const x=clamp(state.cartX+(Math.random()-.5)*440,70,W-70);state.stalagmites.push({x,y:-76,lane,w:34+Math.random()*12,h:58+Math.random()*20,vy:0,gravity:1180,warning:.88,rot:(Math.random()-.5)*.08,spin:(Math.random()-.5)*.18,landed:false,fade:0});}
+function updateStalagmites(dt){const l=LEVELS[state.level];if(l.spikeInterval){state.spikeTimer-=dt;if(state.spikeTimer<=0){spawnStalagmite();state.spikeTimer=l.spikeInterval*(.78+Math.random()*.42);}}state.invuln=Math.max(0,state.invuln-dt);
+ for(let i=state.stalagmites.length-1;i>=0;i--){const s=state.stalagmites[i];if(s.warning>0){s.warning=Math.max(0,s.warning-dt);continue;}if(s.landed){s.fade+=dt;if(s.fade>.34)state.stalagmites.splice(i,1);continue;}s.vy+=s.gravity*dt;s.y+=s.vy*dt;s.rot+=s.spin*dt;const m=cartMetrics(s.lane),laneReady=state.activeLane===s.lane&&state.laneT>.94&&Math.abs(state.laneVisual-s.lane)<.12;const hitX=Math.abs(s.x-state.cartX)<m.outer+s.w*.34;const hitY=s.y+s.h>=m.top+4&&s.y<m.floor;
+  if(state.invuln<=0&&laneReady&&hitX&&hitY){state.lives=Math.max(0,state.lives-1);state.invuln=1.25;state.shake=settings.shake&&!settings.reducedMotion?.58:0;state.cartVX+=(state.cartX<s.x?-1:1)*95;burst(s.x,m.top,'#ff5367',24);beep(95,.24,'sawtooth');showToast(state.lives?`Удар сталактита! Осталось жизней: ${state.lives}`:'Последняя жизнь потеряна!');state.stalagmites.splice(i,1);updateHUD();if(state.lives<=0){state.deathReason='stalactites';endLevel(false);return false;}continue;}
+  if(s.y+s.h>=m.floor){s.y=m.floor-s.h;s.vy=0;s.landed=true;s.fade=0;burst(s.x,m.floor,'#ff6b67',9);}
+ }
+ return true;}
+function drawStalagmite(s){const m=cartMetrics(s.lane);if(s.warning>0){const pulse=.5+.5*Math.sin(performance.now()*.018);ctx.save();ctx.globalAlpha=.25+.45*pulse;ctx.strokeStyle='#ff5367';ctx.fillStyle='rgba(255,65,82,.14)';ctx.shadowColor='#ff425b';ctx.shadowBlur=18;ctx.lineWidth=2;ctx.setLineDash([7,8]);ctx.beginPath();ctx.moveTo(s.x,22);ctx.lineTo(s.x,m.floor-8);ctx.stroke();ctx.setLineDash([]);ctx.beginPath();ctx.ellipse(s.x,m.floor-5,24+8*pulse,6+2*pulse,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle='#ffe4e7';ctx.font='900 17px system-ui';ctx.textAlign='center';ctx.fillText('!',s.x,Math.max(70,m.top-18));ctx.restore();return;}
+ ctx.save();ctx.translate(s.x,s.y+s.h/2);ctx.rotate(s.rot);const w=s.w,h=s.h;const pts=[[-w*.48,-h*.48],[-w*.23,-h*.4],[-w*.1,-h*.5],[w*.2,-h*.42],[w*.46,-h*.5],[w*.32,-h*.12],[w*.12,h*.16],[0,h*.5],[-w*.16,h*.13],[-w*.34,-h*.08]];ctx.globalAlpha=s.landed?Math.max(0,1-s.fade/.34):1;ctx.shadowColor='#ff6471';ctx.shadowBlur=14;const gr=ctx.createLinearGradient(-w/2,-h/2,w/2,h/2);gr.addColorStop(0,'#c4d3db');gr.addColorStop(.35,'#60798c');gr.addColorStop(1,'#1b2a3b');polygon(pts,gr,'rgba(225,244,255,.72)',1.4);ctx.shadowBlur=0;polygon([[-w*.18,-h*.34],[0,h*.42],[w*.12,-h*.25]],'rgba(255,255,255,.17)');ctx.restore();}
+function cartMetrics(lane){const scale=lane===0 ? .84 : 1;const rail=RAIL_Y[lane];return {scale,top:rail-4-103*scale,inner:66*scale,outer:86*scale,floor:rail-8};}
+function registerMiss(g){if(g.countedMiss)return;g.countedMiss=true;state.missed++;state.combo=0;}
+function collideGemPair(a,b){if(a.lane!==b.lane)return;const dx=b.x-a.x,dy=b.y-a.y;const min=a.r+b.r;const d2=dx*dx+dy*dy;if(d2>=min*min||d2<.001)return;const d=Math.sqrt(d2),nx=dx/d,ny=dy/d,overlap=min-d;const invA=1/a.mass,invB=1/b.mass,total=invA+invB;
+ a.x-=nx*overlap*(invA/total);a.y-=ny*overlap*(invA/total);b.x+=nx*overlap*(invB/total);b.y+=ny*overlap*(invB/total);
+ const rvx=b.vx-a.vx,rvy=b.vy-a.vy,along=rvx*nx+rvy*ny;if(along<0){const impulse=-(1+.58)*along/total;a.vx-=impulse*invA*nx;a.vy-=impulse*invA*ny;b.vx+=impulse*invB*nx;b.vy+=impulse*invB*ny;a.spin-=ny*.7;b.spin+=nx*.7;}
+}
+function updateGemPhysics(dt){
+ for(let i=gems.length-1;i>=0;i--){const g=gems[i];
+  if(!g.resting){g.vy+=g.gravity*dt;g.x+=g.vx*dt;g.y+=g.vy*dt;g.rot+=g.spin*dt;}
+  else {g.x+=g.vx*dt;g.rot+=g.spin*dt;g.vx*=Math.pow(.18,dt);g.spin*=Math.pow(.3,dt);g.life-=dt;}
+  if(g.x-g.r<24){g.x=24+g.r;g.vx=Math.abs(g.vx)*.52;g.spin+=.5;}
+  if(g.x+g.r>W-24){g.x=W-24-g.r;g.vx=-Math.abs(g.vx)*.52;g.spin-=.5;}
+  if(settings.particles&&particles.length<160&&!g.resting&&Math.random()<(settings.particleDensity==='low'?.08:settings.particleDensity==='high'?.30:.18))particles.push({x:g.x+(Math.random()-.5)*6,y:g.y+g.r*.5,vx:(Math.random()-.5)*16,vy:16+Math.random()*32,life:.2+Math.random()*.2,max:.4,color:g.laneGlow,size:1+Math.random()*2});
+ }
+ for(let i=0;i<gems.length;i++)for(let j=i+1;j<gems.length;j++)collideGemPair(gems[i],gems[j]);
+ for(let i=gems.length-1;i>=0;i--){const g=gems[i];const m=cartMetrics(g.lane);const laneReady=state.activeLane===g.lane&&state.laneT>=.98&&Math.abs(state.laneVisual-g.lane)<.08;const dx=g.x-state.cartX;
+  if(!g.resting&&!g.grounded&&laneReady&&g.y+g.r>=m.top&&g.y-g.r<m.top+13){
+   if(Math.abs(dx)<=m.inner-g.r*.92){catchGem(g);gems.splice(i,1);continue;}
+   if(Math.abs(dx)<=m.outer+g.r){const side=dx<0?-1:1;g.x=state.cartX+side*(m.outer+g.r+1);g.vx=side*(Math.abs(g.vx)*.55+105);g.vy=-Math.abs(g.vy)*.30;g.spin+=side*1.8;g.bounced=true;burst(g.x,m.top,g.laneGlow,3);}
+  }
+  if(!g.grounded&&g.y+g.r>=m.floor){g.y=m.floor-g.r;g.grounded=true;g.resting=true;g.shattered=true;registerMiss(g);burst(g.x,m.floor,g.laneGlow||'#cfe9ff',8);g.vy=0;g.vx*=.18;g.spin*=.12;g.life=.42;continue;}
+  if(g.resting&&g.life<=0){gems.splice(i,1);continue;}
+  if(g.y>H+80||g.life<0){registerMiss(g);gems.splice(i,1);}
+ }
+}
+function catchGem(g){const t=g.type;if(t.hazard){const lost=Math.min(state.cargo.length,Math.max(1,Math.ceil(state.cargo.length*.35)));for(let i=0;i<lost;i++)spillOne(true);state.shake=settings.shake&&!settings.reducedMotion?.35:0;showToast('Взрывная порода! Часть груза потеряна');beep(110,.22,'sawtooth');burst(g.x,g.y,'#ff684f',22);return;}
+ const objective=LEVELS[state.level].objective;
+ state.caughtByType[t.id]=(state.caughtByType[t.id]||0)+1;
+ let bonus=0;if(state.level>=7){if(state.elapsed-state.lastCatch<3.5)state.combo++;else state.combo=1;state.lastCatch=state.elapsed;if(state.combo>=2)bonus=Math.min(50,(state.combo-1)*8);}
+ state.cargoValue+=t.value;state.score+=t.value+bonus;state.cargoMass+=t.weight;state.caught++;state.cargo.push({type:t,value:t.value,laneGlow:g.laneGlow||LANE_GLOW[g.lane],lane:g.lane,x:0,y:0,phase:Math.random()*6.28});
+ if(objective.type==='color'&&t.id!==objective.color){const penalty=objective.penalty||20;state.score=Math.max(0,state.score-penalty);state.penaltyPoints+=penalty;showToast(`Неверный цвет · штраф −${penalty} очков`);}
+ else {if(bonus)showToast(`Серия ×${state.combo} · бонус +${bonus}`);else if(objective.type==='color')showToast(`Верно! ${GEM_LABELS[t.id]||'Кристалл'} · ${state.caughtByType[t.id]}/${objective.target}`);}
+ burst(g.x,g.y,g.laneGlow||t.color,12);beep(420+Math.min(t.value,150)*2,.07,'sine');
+ while(state.cargoMass>state.capacity&&state.cargo.length){spillOne(false);state.shake=settings.shake&&!settings.reducedMotion?.28:0;}
+}
+function spillOne(fromHazard=false){if(!state.cargo.length)return;const item=state.cargo.pop();state.cargoMass=Math.max(0,state.cargoMass-item.type.weight);const lostValue=item.value??item.type.value;state.cargoValue=Math.max(0,state.cargoValue-lostValue);state.score=Math.max(0,state.score-lostValue);spills.push({type:item.type,laneGlow:item.laneGlow||LANE_GLOW[item.lane??state.activeLane],x:state.cartX+(Math.random()-.5)*70,y:RAIL_Y[state.activeLane]-52,vx:(Math.random()-.5)*180,vy:-130-Math.random()*80,rot:Math.random()*6,spin:(Math.random()-.5)*7,life:2.4});if(!fromHazard)showToast('Перегруз! Камень вывалился');}
+function unload(){if(!state||state.paused||state.over)return;if(state.unloadCooldown>0){showToast(`Разгрузка через ${Math.ceil(state.unloadCooldown)} сек.`);return;}if(!state.cargo.length){showToast('В вагонетке пока пусто');return;}const val=state.cargoValue;state.banked+=val;state.cargo=[];state.cargoValue=0;state.cargoMass=0;state.unloadCooldown=5;burst(state.cartX,RAIL_Y[state.activeLane]-55,'#ffe18a',32);beep(740,.16,'triangle');showToast(`Груз сдан: +${fmt(val)} ✦`);updateHUD();}
+function burst(x,y,color,count=12){if(!settings.particles)return;count=Math.max(1,Math.round(count*(settings.particleDensity==='low'?.4:settings.particleDensity==='high'?1.25:1)));for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,s=35+Math.random()*180,life=.35+Math.random()*.7;if(particles.length<160)particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-25,life,max:life,color,size:1.5+Math.random()*3.4});}}
+function initAmbient(){const cols=['#a9e7ff','#70caff','#d4f4ff','#ffd49a'];ambient=Array.from({length:118},()=>({x:Math.random()*W,y:Math.random()*H,vy:5+Math.random()*20,vx:(Math.random()-.5)*12,r:.6+Math.random()*1.8,a:.12+Math.random()*.34,color:cols[Math.floor(Math.random()*cols.length)],phase:Math.random()*6.28}));}
+function drawAmbientScene(){const t=performance.now()/1000;const haze=[{x:300+Math.sin(t*.19)*55,y:330+Math.cos(t*.22)*18,r:210,a:.075},{x:870+Math.cos(t*.16)*75,y:405+Math.sin(t*.2)*22,r:270,a:.065},{x:1120+Math.sin(t*.14)*48,y:570,r:190,a:.055}];for(const h of haze){const g=ctx.createRadialGradient(h.x,h.y,0,h.x,h.y,h.r);g.addColorStop(0,`rgba(73,171,239,${h.a})`);g.addColorStop(1,'rgba(73,171,239,0)');ctx.fillStyle=g;ctx.fillRect(h.x-h.r,h.y-h.r,h.r*2,h.r*2);}const crystals=[[120,110,45],[395,390,30],[300,640,38],[1130,170,42],[150,690,34],[1190,610,48]];for(let i=0;i<crystals.length;i++){const [x,y,r]=crystals[i],pulse=.55+.45*Math.sin(t*1.35+i*1.7),g=ctx.createRadialGradient(x,y,1,x,y,r*(1.2+pulse*.2));g.addColorStop(0,`rgba(75,190,255,${.16*pulse})`);g.addColorStop(1,'rgba(75,190,255,0)');ctx.fillStyle=g;ctx.fillRect(x-r*1.4,y-r*1.4,r*2.8,r*2.8);}}
+function updateHUD(){if(!state)return;const l=LEVELS[state.level],o=l.objective,prog=objectiveProgress();$('#hudLevel').textContent=String(state.level+1).padStart(2,'0');$('#hudLevelName').textContent=l.name;$('#hudScore').textContent=fmt(prog);$('#hudTarget').textContent=fmt(o.target);$('#hudTargetUnit').textContent=objectiveUnit();$('#hudProgress').style.width=Math.min(100,prog/o.target*100)+'%';$('#hudMass').textContent=state.cargoMass;$('#hudCapacity').textContent=state.capacity;$('#hudCargoValue').textContent=fmt(state.cargoValue)+' ✦ в вагонетке';$('#hudTime').textContent=Math.ceil(state.timeLeft);$('#hudLives').textContent='◆ '.repeat(state.lives).trim()||'—';$('#hudLives').style.opacity=state.lives/3;$('#hudLives').parentElement.style.display=l.spikeInterval?'':'none';$('#hudMissed').textContent=settings.showMisses?`Промахи: ${state.missed}`:'';$('#unloadBtn').disabled=state.unloadCooldown>0||!state.cargo.length;$('#unloadLabel').textContent=state.cargo.length?'СДАТЬ КРИСТАЛЛЫ':'НЕТ ДОБЫЧИ';$('#unloadTimer').textContent=state.unloadCooldown>0?`ГОТОВО ЧЕРЕЗ ${Math.ceil(state.unloadCooldown)} СЕК.`:'СДАТЬ ДОБЫЧУ · 5 СЕК.';updateLaneButtons();}
+function endLevel(won){if(!state||state.over)return;state.over=true;state.levelWon=won;if(state.cargo.length){state.banked+=state.cargoValue;state.cargo=[];state.cargoValue=0;state.cargoMass=0;}if(won){if(!progress.cleared.includes(state.level))progress.cleared.push(state.level);progress.best[state.level]=Math.max(progress.best[state.level]||0,state.score);saveProgress();}else progress.best[state.level]=Math.max(progress.best[state.level]||0,state.score);saveProgress();cancelAnimationFrame(raf);resultModal(won);}
+function restartLevel(){const n=state?state.level:0;++pendingLevelStart;$('#assetLoading').hidden=true;startGameReady(n,true);}
+function nextLevel(){const n=Math.min(LEVELS.length-1,state.level+1);startGame(n);}
+function exitToMenu(){if(state){state.moveDir=0;state.cartVX=0;}cancelAnimationFrame(raf);closeModal();$('#levelIntro').hidden=true;showScreen('menu');}
+
+function loop(now){if(!state||state.over||state.paused)return;const rawDt=(now-lastFrame)/1000||.016;const dt=Math.min(.034,rawDt);lastFrame=now;frameQuality=rawDt>.027?0:1;if(state.introActive){state.introRemaining-=dt;if(state.introRemaining<=0)beginLevelPlay();render();raf=requestAnimationFrame(loop);return;}update(dt);render();raf=requestAnimationFrame(loop);}
+function update(dt){const l=LEVELS[state.level];state.elapsed+=dt;state.timeLeft=Math.max(0,l.time-state.elapsed);state.unloadCooldown=Math.max(0,state.unloadCooldown-dt);
+ if(state.moveDir){state.cartVX=clamp(state.cartVX+state.moveDir*state.cartAccel*dt,-state.cartSpeed,state.cartSpeed);}else{const f=state.cartFriction*dt;state.cartVX=Math.abs(state.cartVX)<=f?0:state.cartVX-Math.sign(state.cartVX)*f;}
+ state.cartX+=state.cartVX*dt;if(state.cartX<state.cartMin){state.cartX=state.cartMin;state.cartVX=0;}if(state.cartX>state.cartMax){state.cartX=state.cartMax;state.cartVX=0;}
+ if(state.laneT<1){state.laneT=Math.min(1,state.laneT+dt/.22);const t=state.laneT;const e=t*t*(3-2*t);state.laneVisual=state.laneFrom+(state.laneTo-state.laneFrom)*e;}
+ if(!updateStalagmites(dt))return;
+ state.spawnTimer-=dt;if(state.spawnTimer<=0){spawnGem();if(Math.random()<(l.doubleChance||0))spawnGem();state.spawnTimer=l.interval*.91*(.85+Math.random()*.3);}
+ updateGemPhysics(dt);
+ for(let i=spills.length-1;i>=0;i--){const s=spills[i];s.vy+=460*dt;s.x+=s.vx*dt;s.y+=s.vy*dt;s.rot+=s.spin*dt;s.life-=dt;const floor=RAIL_Y[state.activeLane]-8;if(s.y>floor){s.y=floor;s.vy*=-.28;s.vx*=.72;}if(s.life<=0)spills.splice(i,1);}
+ for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=45*dt;p.vx*=.99;p.life-=dt;if(p.life<=0)particles.splice(i,1);}
+ for(const p of ambient){p.x+=p.vx*dt;p.y+=p.vy*dt;if(p.y>H){p.y=-5;p.x=Math.random()*W;}if(p.x<0)p.x=W;if(p.x>W)p.x=0;}
+ if(state.shake>0)state.shake=Math.max(0,state.shake-dt);if(objectiveComplete()){endLevel(true);return;}if(state.timeLeft<=0){endLevel(objectiveComplete());return;}hudAccumulator+=dt;if(hudAccumulator>=.075){hudAccumulator=0;updateHUD();}}
+
+function drawCover(img){if(img===gameBg&&cachedGameBackground){ctx.drawImage(cachedGameBackground,0,0);return;}if(!img.complete||!img.naturalWidth){ctx.fillStyle='#07182b';ctx.fillRect(0,0,W,H);return;}const scale=Math.max(W/img.width,H/img.height),w=img.width*scale,h=img.height*scale;ctx.drawImage(img,(W-w)/2,(H-h)/2,w,h);}
+function polygon(points,fill,stroke=null,lw=1){ctx.beginPath();ctx.moveTo(points[0][0],points[0][1]);for(let i=1;i<points.length;i++)ctx.lineTo(points[i][0],points[i][1]);ctx.closePath();if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke();}}
+function drawGem(x,y,r,type,rot=0,alpha=1,laneGlow=null){
+ ctx.save();ctx.globalAlpha=alpha;ctx.translate(x,y);ctx.rotate(rot);
+ if(laneGlow){ctx.save();ctx.globalAlpha=alpha*.22;ctx.fillStyle=laneGlow;ctx.shadowColor=laneGlow;ctx.shadowBlur=24;ctx.beginPath();ctx.arc(0,0,r*1.45,0,Math.PI*2);ctx.fill();ctx.restore();}
+ const sprite = type && type.sprite ? gemSprites[type.sprite] : null;
+ if(sprite && sprite.complete && sprite.naturalWidth){
+  const scale = type.hazard ? 2.55 : 2.35;
+  const w = r * scale * (sprite.naturalWidth / Math.max(1, sprite.naturalHeight));
+  const h = r * scale;
+  ctx.save();
+  if(laneGlow){ctx.shadowColor=laneGlow;ctx.shadowBlur=type.hazard?10:16;}
+  ctx.drawImage(sprite, -w/2, -h/2, w, h);
+  ctx.restore();
+  if(laneGlow){ctx.globalAlpha=alpha*.5;ctx.strokeStyle=laneGlow;ctx.lineWidth=1.35;ctx.beginPath();ctx.arc(0,0,r*1.12,0,Math.PI*2);ctx.stroke();}
+  ctx.restore();
+  return;
+ }
+ const sides=type.sides||6;const pts=[];for(let i=0;i<sides;i++){const a=-Math.PI/2+i*Math.PI*2/sides;pts.push([Math.cos(a)*r,Math.sin(a)*r*1.12]);}
+ ctx.shadowColor=laneGlow||type.color;ctx.shadowBlur=type.hazard?5:laneGlow?21:16;const grad=ctx.createLinearGradient(-r,-r,r,r);grad.addColorStop(0,type.color);grad.addColorStop(.52,type.dark);grad.addColorStop(1,type.color);polygon(pts,grad,'rgba(235,250,255,.72)',1.2);ctx.shadowBlur=0;for(let i=0;i<sides;i++){const a=pts[i],b=pts[(i+1)%sides];polygon([[0,0],a,b],i%2===0?'rgba(255,255,255,.25)':'rgba(0,12,35,.17)');}polygon([[-r*.2,-r*.65],[0,-r*.83],[r*.3,-r*.45],[0,-r*.2]],'rgba(255,255,255,.5)');if(laneGlow){ctx.globalAlpha=alpha*.62;ctx.strokeStyle=laneGlow;ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(0,0,r*1.16,0,Math.PI*2);ctx.stroke();}if(type.hazard){ctx.globalAlpha=alpha;ctx.strokeStyle='#ff715c';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-r*.25,-r*.3);ctx.lineTo(r*.08,r*.05);ctx.lineTo(-r*.05,r*.48);ctx.stroke();}ctx.restore();
+}
+function drawCart(){
+ const lane=state.laneVisual,rail=RAIL_Y[0]+(RAIL_Y[1]-RAIL_Y[0])*lane,scale=.84+.16*lane,x=state.cartX,y=rail-4;
+ ctx.save();ctx.translate(x,y);ctx.rotate(clamp(state.cartVX/5200,-.075,.075));ctx.scale(scale,scale);
+ if(state.shake>0)ctx.translate((Math.random()-.5)*state.shake*20,(Math.random()-.5)*state.shake*12);
+ ctx.fillStyle='rgba(0,0,0,.48)';ctx.beginPath();ctx.ellipse(0,2,104,18,0,0,Math.PI*2);ctx.fill();
+ const under=ctx.createRadialGradient(0,-12,8,0,-12,95);under.addColorStop(0,'rgba(69,190,255,.16)');under.addColorStop(1,'rgba(69,190,255,0)');ctx.fillStyle=under;ctx.fillRect(-110,-35,220,55);
+ for(const wx of [-57,57]){ctx.fillStyle='#172c3b';roundRect(wx-14,-29,28,13,4);ctx.fill();ctx.strokeStyle='#91aebe';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(wx-10,-25);ctx.quadraticCurveTo(wx,-18,wx+10,-25);ctx.stroke();}
+ const chassis=ctx.createLinearGradient(0,-36,0,-7);chassis.addColorStop(0,'#d0e2e9');chassis.addColorStop(.22,'#647f91');chassis.addColorStop(.58,'#263d50');chassis.addColorStop(1,'#101e2d');
+ polygon([[-91,-37],[-78,-47],[78,-47],[91,-37],[84,-15],[-84,-15]],chassis,'#d5e9f2',2.2);
+ polygon([[-83,-30],[83,-30],[76,-19],[-76,-19]],'#263b4b','#7897a8',1.2);
+ for(const wx of [-59,59]){
+  ctx.save();ctx.translate(wx,-9);ctx.rotate(state.elapsed*2.8*(state.cartVX<0?-1:1));
+  ctx.fillStyle='#0a1521';ctx.beginPath();ctx.arc(0,0,19,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='#8ea8b7';ctx.lineWidth=4;ctx.stroke();ctx.strokeStyle='#344f62';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,13,0,Math.PI*2);ctx.stroke();
+  for(let k=0;k<8;k++){const a=k*Math.PI/4;ctx.strokeStyle='#a9c0cc';ctx.lineWidth=2.2;ctx.beginPath();ctx.moveTo(Math.cos(a)*4,Math.sin(a)*4);ctx.lineTo(Math.cos(a)*12,Math.sin(a)*12);ctx.stroke();}
+  const hub=ctx.createRadialGradient(-3,-3,1,0,0,6);hub.addColorStop(0,'#fff0b1');hub.addColorStop(.5,'#c98c3d');hub.addColorStop(1,'#4c2b18');ctx.fillStyle=hub;ctx.beginPath();ctx.arc(0,0,6,0,Math.PI*2);ctx.fill();ctx.restore();
+ }
+ const wood=ctx.createLinearGradient(0,-103,0,-24);wood.addColorStop(0,'#f0c47a');wood.addColorStop(.18,'#b8793d');wood.addColorStop(.55,'#80502d');wood.addColorStop(1,'#392a29');
+ polygon([[-82,-91],[-72,-101],[72,-101],[82,-91],[69,-28],[-69,-28]],wood,'#f1ca83',2.5);
+ for(let i=-5;i<=5;i++){
+  const bx=i*13;ctx.strokeStyle=i%2===0?'rgba(255,220,155,.48)':'rgba(45,24,18,.3)';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(bx,-94);ctx.lineTo(bx*.84,-32);ctx.stroke();
+  ctx.strokeStyle='rgba(255,239,197,.14)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(bx+3,-88);ctx.lineTo(bx*.84+3,-39);ctx.stroke();
+ }
+ polygon([[-69,-88],[69,-88],[59,-39],[-59,-39]],'rgba(5,17,28,.94)','#e5c184',2);
+ ctx.save();ctx.beginPath();ctx.moveTo(-65,-86);ctx.lineTo(65,-86);ctx.lineTo(56,-40);ctx.lineTo(-56,-40);ctx.closePath();ctx.clip();
+ state.cargo.forEach((item,i)=>{const col=i%6,row=Math.floor(i/6);const gx=-47+col*18+(row%2)*7,gy=-51-row*14+Math.sin(state.elapsed*4+item.phase)*1.5;drawGem(gx,gy,9.5,item.type,Math.sin(state.elapsed*2+item.phase)*.08,.98,item.laneGlow||null);});ctx.restore();
+ for(const sx of [-76,76]){polygon([[sx-7,-97],[sx+7,-97],[sx*.84,-31],[sx*.68,-28]],'#30495b','#c5d9e2',1.4);for(const sy of [-88,-68,-45]){ctx.fillStyle='#f4d99a';ctx.beginPath();ctx.arc(sx*.91,sy,2.7,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#694521';ctx.lineWidth=1;ctx.stroke();}}
+ const rim=ctx.createLinearGradient(0,-105,0,-91);rim.addColorStop(0,'#fff0b6');rim.addColorStop(.4,'#d59a4c');rim.addColorStop(1,'#68401f');polygon([[-85,-103],[-73,-109],[73,-109],[85,-103],[80,-94],[-80,-94]],rim,'#ffe7a8',1.5);
+ const bumper=ctx.createLinearGradient(0,-37,0,-24);bumper.addColorStop(0,'#c5dce5');bumper.addColorStop(.45,'#516c7f');bumper.addColorStop(1,'#172b3c');polygon([[-92,-37],[92,-37],[84,-25],[-84,-25]],bumper,'#9bb8c8',1.5);
+ for(const sx of [-88,88]){ctx.save();ctx.translate(sx,-66);ctx.shadowColor='#ffc95f';ctx.shadowBlur=17;const lamp=ctx.createRadialGradient(-2,-3,1,0,0,11);lamp.addColorStop(0,'#fff7c8');lamp.addColorStop(.38,'#ffd36a');lamp.addColorStop(1,'#a95b19');ctx.fillStyle=lamp;ctx.beginPath();ctx.arc(0,0,8,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#e5c17e';ctx.lineWidth=2;ctx.stroke();ctx.restore();}
+ polygon([[-22,-22],[22,-22],[18,-16],[-18,-16]],'#233e52','#8fb0c2',1);ctx.fillStyle='#bfeeff';ctx.font='900 7px system-ui';ctx.textAlign='center';ctx.fillText('CM · 04',0,-17);
+ ctx.restore();
+}
+function render(){ctx.save();let shake=state.shake>0?state.shake*7:0;if(shake)ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);drawCover(gameBg);if(settings.particles&&!settings.reducedMotion&&frameQuality>0)drawAmbientScene();
+ for(let i=0;i<2;i++){const y=RAIL_Y[i]-42;const glow=LANE_GLOW[i];const grad=ctx.createLinearGradient(0,y,0,y+24);grad.addColorStop(0,'rgba(70,190,255,0)');grad.addColorStop(.5,i===state.activeLane?(i===0?'rgba(255,75,100,.16)':'rgba(84,190,255,.16)'):'rgba(84,140,190,.025)');grad.addColorStop(1,'rgba(70,190,255,0)');ctx.fillStyle=grad;ctx.fillRect(0,y-12,W,34);ctx.save();ctx.globalAlpha=.78;ctx.fillStyle=glow;ctx.shadowColor=glow;ctx.shadowBlur=10;ctx.font='900 11px system-ui';ctx.textAlign='left';ctx.fillText(i===0?'ДАЛЬНИЙ · КРАСНЫЙ':'БЛИЖНИЙ · СИНИЙ',34,RAIL_Y[i]-48);ctx.restore();}
+ if(settings.particles){for(const p of ambient){ctx.globalAlpha=p.a*(.68+.32*Math.sin(performance.now()*.0015+p.phase));ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=0;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();}}ctx.globalAlpha=1;ctx.shadowBlur=0;
+ for(const g of gems){ctx.save();ctx.globalAlpha=g.shattered ? Math.min(.08, g.life*.14) : (g.resting ? .12 : .25);ctx.strokeStyle=g.laneGlow;ctx.lineWidth=2.2;ctx.beginPath();ctx.moveTo(g.x-g.vx*.035,g.y-g.vy*.035);ctx.lineTo(g.x-g.vx*.13,g.y-g.vy*.13-10);ctx.stroke();ctx.restore();drawGem(g.x,g.y,g.r,g.type,g.rot,g.resting?Math.min(1,g.life/(g.shattered?.42:1.45)):1,g.laneGlow);}
+ for(const s of state.stalagmites)drawStalagmite(s);
+ for(const s of spills)drawGem(s.x,s.y,13,s.type,s.rot,Math.max(0,s.life/2.4),s.laneGlow||null);
+ if(state.invuln>0&&Math.floor(performance.now()/90)%2===0){ctx.save();ctx.globalAlpha=.16;ctx.fillStyle='#ff6474';ctx.fillRect(state.cartX-78,RAIL_Y[state.activeLane]-92,156,92);ctx.restore();}
+ drawCart();
+ for(const p of particles){ctx.globalAlpha=Math.max(0,p.life/p.max);ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=frameQuality>0?4:0;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();}ctx.globalAlpha=1;ctx.shadowBlur=0;
+ const barX=state.cartX-48,barY=RAIL_Y[0]+(RAIL_Y[1]-RAIL_Y[0])*state.laneVisual-98;ctx.fillStyle='rgba(3,12,23,.7)';roundRect(barX,barY,96,7,4);ctx.fill();ctx.fillStyle=state.cargoMass>8?'#ff7768':'#8df1d2';roundRect(barX,barY,96*Math.min(1,state.cargoMass/state.capacity),7,4);ctx.fill();
+ ctx.restore();}
+function roundRect(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);}
+
+$('#app').addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b)return;const a=b.dataset.action;switch(a){
+ case'play':{const n=LEVELS.findIndex((_,i)=>!progress.cleared.includes(i));startGame(n<0?0:n);break;}
+ case'levels':levelsModal();break;case'rules':rulesModal();break;case'about':aboutModal();break;case'settings':settingsFromPause=false;settingsModal();break;case'pause-settings':settingsFromPause=true;settingsModal();break;case'close-modal':if(settingsFromPause&&state&&state.paused){settingsFromPause=false;pauseModal();}else closeModal();break;
+ case'start-level':startGame(Number(b.dataset.level));break;case'pause':pauseModal();break;case'resume':closeModal();if(state){state.paused=false;lastFrame=performance.now();raf=requestAnimationFrame(loop);}break;
+ case'restart':settingsFromPause=false;restartLevel();break;case'next-level':nextLevel();break;case'exit':settingsFromPause=false;exitToMenu();break;case'unload':unload();break;case'lane-rear':switchLane(0);break;case'lane-front':switchLane(1);break;
+ case'start-level-now':beginLevelPlay();break;
+ case'setting-toggle':{const k=b.dataset.key;if(Object.prototype.hasOwnProperty.call(defaultSettings,k)&&typeof defaultSettings[k]==='boolean'){settings[k]=!settings[k];saveSettings();settingsModal();}break;}case'reset-settings':settings={...defaultSettings};saveSettings();settingsModal();break;
+ }});
+$('#modalLayer').addEventListener('input',e=>{const k=e.target.dataset.settingRange;if(k==='volume'){settings.volume=Number(e.target.value);saveSettings();e.target.nextElementSibling.textContent=settings.volume+'%';}});
+$('#modalLayer').addEventListener('change',e=>{const k=e.target.dataset.settingSelect;if(k==='particleDensity'&&['low','normal','high'].includes(e.target.value)){settings.particleDensity=e.target.value;saveSettings();}else if(k==='swipeSensitivity'){settings.swipeSensitivity=Number(e.target.value);saveSettings();}});
+$('#modalLayer').addEventListener('click',e=>{
+ const btn=e.target.closest('button[data-action]');
+ if(btn&&$('#modalLayer').contains(btn)){
+  const action=btn.dataset.action;
+  if(['restart','next-level','levels','exit','resume'].includes(action)){
+   e.preventDefault();e.stopPropagation();
+   if(btn.disabled)return;
+   if(action==='restart'){settingsFromPause=false;closeModal();restartLevel();}
+   else if(action==='next-level'){settingsFromPause=false;closeModal();nextLevel();}
+   else if(action==='levels'){++pendingLevelStart;closeModal();levelsModal();}
+   else if(action==='exit'){++pendingLevelStart;settingsFromPause=false;closeModal();exitToMenu();}
+   else if(action==='resume'){closeModal();if(state){state.paused=false;lastFrame=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);}}
+   return;
+  }
+ }
+ if(e.target===$('#modalLayer')&&!state?.paused)closeModal();
+});
+window.addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault();if(currentScreen==='game'&&!$('#modalLayer').classList.contains('show')){if(k==='a'||k==='arrowleft'){setMoveDir(-1);return;}if(k==='d'||k==='arrowright'){setMoveDir(1);return;}}if(e.repeat)return;if(k==='w'||k==='arrowup')switchLane(0);else if(k==='s'||k==='arrowdown')switchLane(1);else if(k==='e'||k===' ')unload();else if(k==='p'||k==='escape'){if($('#modalLayer').classList.contains('show')){if(settingsFromPause){settingsFromPause=false;pauseModal();}else if(state&&state.paused){closeModal();state.paused=false;lastFrame=performance.now();raf=requestAnimationFrame(loop);}else closeModal();}else if(currentScreen==='game')pauseModal();}});
+window.addEventListener('keyup',e=>{const k=e.key.toLowerCase();if((k==='a'||k==='arrowleft')&&state&&state.moveDir===-1)stopMove();if((k==='d'||k==='arrowright')&&state&&state.moveDir===1)stopMove();});
+window.addEventListener('blur',()=>stopMove());
+$$('[data-move]').forEach(btn=>{const dir=Number(btn.dataset.move);btn.addEventListener('pointerdown',e=>{e.preventDefault();btn.classList.add('pressed');try{btn.setPointerCapture(e.pointerId);}catch(_){}setMoveDir(dir);});const release=e=>{if(e)e.preventDefault();btn.classList.remove('pressed');if(state&&state.moveDir===dir)stopMove();};btn.addEventListener('pointerup',release);btn.addEventListener('pointercancel',release);btn.addEventListener('lostpointercapture',release);});
+const swipeArea = $('#gameCanvas');
+let laneSwipeStart = null;
+swipeArea.addEventListener('pointerdown', e => {
+ if(e.pointerType === 'mouse' || currentScreen !== 'game' || !state || state.paused || state.over || state.introActive || $('#modalLayer').classList.contains('show'))return;
+ laneSwipeStart = {id:e.pointerId,x:e.clientX,y:e.clientY};
+ try{swipeArea.setPointerCapture(e.pointerId);}catch(_){}
+});
+swipeArea.addEventListener('pointerup', e => {
+ if(!laneSwipeStart || e.pointerId !== laneSwipeStart.id)return;
+ const dx=e.clientX-laneSwipeStart.x, dy=e.clientY-laneSwipeStart.y;
+ laneSwipeStart=null;
+ if(currentScreen !== 'game' || !state || state.paused || state.over || state.introActive || $('#modalLayer').classList.contains('show'))return;
+ if(Math.abs(dy)>=settings.swipeSensitivity && Math.abs(dy)>Math.abs(dx)*1.25) switchLane(dy<0?0:1);
+});
+swipeArea.addEventListener('pointercancel',()=>{laneSwipeStart=null;});
+swipeArea.addEventListener('lostpointercapture',()=>{laneSwipeStart=null;});
+function syncViewport(){const vv=window.visualViewport;const h=vv&&vv.height?vv.height:window.innerHeight;const top=vv&&Number.isFinite(vv.offsetTop)?vv.offsetTop:0;document.documentElement.style.setProperty('--viewport-height',`${Math.max(240,h)}px`);document.documentElement.style.setProperty('--viewport-top',`${Math.max(0,top)}px`);if(canvas&&canvas.clientWidth>0&&canvas.clientHeight>0){const dpr=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(canvas.clientWidth*dpr);canvas.height=Math.round(canvas.clientHeight*dpr);ctx.setTransform(canvas.width/W,0,0,canvas.height/H,0,0);}}
+window.addEventListener('resize',syncViewport,{passive:true});
+window.addEventListener('orientationchange',()=>setTimeout(syncViewport,120),{passive:true});
+if(window.visualViewport){window.visualViewport.addEventListener('resize',syncViewport,{passive:true});window.visualViewport.addEventListener('scroll',syncViewport,{passive:true});}
+function initCanvas(){syncViewport();}
+syncViewport();initAmbient();
+})();
+</script>
+</body>
+</html>
